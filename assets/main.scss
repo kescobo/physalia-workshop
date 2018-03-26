@@ -1,0 +1,51 @@
+---
+---
+
+@import "variables";
+@import "bootstrap/scss/bootstrap";
+
+body {
+  background-color: #E5E5E5;
+}
+
+.content {
+  font-size: $custom-font-size;
+}
+
+.bg-header-color {
+  background-color: #1F1F1F;
+}
+
+.navbar.active {
+  color: blue;
+}
+
+.nav.navbar-nav.navbar-right li a span{
+  color: white;
+}
+
+.navbar {
+  padding: 2px 0 2px 0 !important;
+}
+
+.logo-header {
+  background-color: #202020;
+  padding: 3px 0 10px 0;
+}
+
+#nav-menu {
+  border-top: 1px solid #353535;
+  border-bottom: 1px solid #353535;
+}
+
+.highlight pre {
+  margin: 0 !important;
+}
+
+div.highlight {
+  margin-bottom: 17px;
+}
+
+.highlight { 
+  padding: 3px 3px 3px 3px;
+}

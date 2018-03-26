@@ -1,0 +1,13 @@
+markdown: kramdown
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+sass:
+    load_paths:
+        - _sass
+        - node_modules
+
+include: ["_pages", "_pages/labs"]
+exclude: []          

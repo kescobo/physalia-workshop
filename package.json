@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.1"
+  },
+  "name": "physalia-workshop",
+  "version": "1.0.0",
+  "description": "Github.io page for physalia workshop on 'omics stuff",
+  "main": "index.html",
+  "repository": "https://github.com/biobakery/physlia-workshop.git",
+  "author": "Cesar Arze <cesar.arze@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
