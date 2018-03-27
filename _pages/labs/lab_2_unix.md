@@ -21,7 +21,7 @@ of upcoming labs.
 The Unix directory structure can be visualized as a tree. Each level of the tree indicates a series 
 of folders or files which can have zero or many nested child folders/files.
 
-<img class="mx-auto d-block" src="/assets/img/labs/lab_1_unix_dir_tree.png" alt="Unix Directory Tree Structure" />
+<img class="mx-auto d-block" src="/assets/img/labs/lab_2_unix_dir_tree.png" alt="Unix Directory Tree Structure" />
 
 #### Getting the Working Directory
 It is important to know where we are when navigating the Unix directory structure. The current directory 
@@ -229,7 +229,7 @@ the specified directory are also deleted. Failure to provide the `-rf` argument 
 ```bash
 > cd ..
 > pwd
-/home/stduent/data/sequences
+/home/student/data/sequences
 > rm example_1/
 rm: js: is a directory
 > rm -rf example_1/
@@ -239,11 +239,64 @@ rm: js: is a directory
   <b>Excercise #4</b>: Move all files that end in <code>.fasta</code> to the <code>example_2</code> directory. Delete this folder using <code>rm</code>
 </div>
 
-### Searching Through Text Files
+### Full Text Search With `grep`
 
-Searching 
+Searching the contents of a text file is a useful operation made very easy through the use of the 
+`grep` command:
 
+```bash
+> cd /home/student/data/sequences
+> grep "ACGT" seqsA.fasta
+ACGTAGGTCATTGACTATATACCA
+GTCAGACCCACCCCGCACGGGGTAAATATGGCACGCGTCCGACCTGGTTCCTGGCGTTCTACGCTGCCACGTGTTC
+ATTAACTGTTGTTTGGTAGCACAAAAGTATTACCATGGTCCTAGAAGTTCGGCACAGTTAGTTCGAGCCTAATGTC
+ACAAATGACGCAGAACGCCAATGAGTGCCAGACATTAGGTGGAGTTCAGTTCGGTAACGGAGAGACTCTGCGGCGT
+ACTTAATTATGCATTTGAAACGCGCCCAAGTGACGCTAGGCAAGTCAGAGCAGGTTCCCGTGTTAGCTTGAGGGTA
+AACATACAAGCCGATTGAAGATGGGTAGGGGGCTTCAAATCGTCCAGCACTCCACAGTACCTCCGAGAGCAAGTAG
+GGCACCCTGTAGTTCGAAGCGGAACTATTTCGAGGGGCGAGCCCACATCGTCTCTTCTGCGGATGACTTAACACGC
+TAGGGAGGTGGAGTCGATTCCATCGATGGTTATAAATCAAAAAATCGGAACGCTGTCTGGAGGATGAATCTAACGG
+TGCGTATCTCGATCGCTCAGTCGCTTTTCGTACTGCGCGAAAGTTCGCACCGCTCATACACTTGGTTCCGAAGCCT
+GTCCTGATATATGAATCCAAACTAGAGCGGGGCTCTTGACGTTTGGAGTTGTAAATATCTAATATTCCAATCGGCT
+TTTACGTGCACCACCGCGGGCGGCTGACGAGGGACTCACACCGAGAAACTAGACAGTTGCGCGCTGGAAGTAGCGC
+CGGCTAAGAAAGACGCCTGGTACAGCAGGACTATGAAACCCGTACAAAGGCAACATCCTCACTTCGGTGAATCGAA
+ACGCGGCATCAAGGTTACTTTTTGGATACCTGAAACAAAACCCATCGTAGTCCTTAGACTTGGGACACTTTCACCC
+TAGGGCCCATATCTGGAAATAGACGCCAAGTTCAATCCGTACTCCGACGTACGATGGAACAGTGTGGATGTGACGA
+GCTTCATTTAT
+```
+`grep` will output the lines in the file that match our search term (`ACGT` in the example above).
 
+Options can be passed to `grep` to print out the line number of the match:
+
+```bash
+> grep -n ACGT seqsA.fasta
+2:ACGTAGGTCATTGACTATATACCA
+4:GTCAGACCCACCCCGCACGGGGTAAATATGGCACGCGTCCGACCTGGTTCCTGGCGTTCTACGCTGCCACGTG
+TTCATTAACTGTTGTTTGGTAGCACAAAAGTATTACCATGGTCCTAGAAGTTCGGCACAGTTAGTTCGAGCCTAA
+TGTCACAAATGACGCAGAACGCCAATGAGTGCCAGACATTAGGTGGAGTTCAGTTCGGTAACGGAGAGACTCTGC
+GGCGTACTTAATTATGCATTTGAAACGCGCCCAAGTGACGCTAGGCAAGTCAGAGCAGGTTCCCGTGTTAGCTTG
+AGGGTAAACATACAAGCCGATTGAAGATGGGTAGGGGGCTTCAAATCGTCCAGCACTCCACAGTACCTCCGAGAG
+CAAGTAGGGCACCCTGTAGTTCGAAGCGGAACTATTTCGAGGGGCGAGCCCACATCGTCTCTTCTGCGGATGACT
+TAACACGCTAGGGAGGTGGAGTCGATTCCATCGATGGTTATAAATCAAAAAATCGGAACGCTGTCTGGAGGATGA
+ATCTAACGGTGCGTATCTCGATCGCTCAGTCGCTTTTCGTACTGCGCGAAAGTTCGCACCGCTCATACACTTGGT
+TCCGAAGCCTGTCCTGATATATGAATCCAAACTAGAGCGGGGCTCTTGACGTTTGGAGTTGTAAATATCTAATAT
+TCCAATCGGCTTTTACGTGCACCACCGCGGGCGGCTGACGAGGGACTCACACCGAGAAACTAGACAGTTGCGCGC
+TGGAAGTAGCGCCGGCTAAGAAAGACGCCTGGTACAGCAGGACTATGAAACCCGTACAAAGGCAACATCCTCACT
+TCGGTGAATCGAAACGCGGCATCAAGGTTACTTTTTGGATACCTGAAACAAAACCCATCGTAGTCCTTAGACTTG
+GGACACTTTCACCCCTAGGGCCCATATCTGGAAATAGACGCCAAGTTCAATCCGTACTCCGACGTACGATGGAAC
+AGTGTGGATGTGACGAGCTTCATTTAT
+```
+
+Or just the name of the file a match was found in:
+
+```bash
+> grep -l ACGT seqsA.fasta
+seqsA.fasta
+```
+
+<div class="alert alert-success" role="alert">
+  <b>Excercise #5</b>: Search all FASTA files for the nucleotide sequence <code>GTCAGACC</code> in the 
+  sequences folder.
+</div>
 
 ### Unix Manual Pages
 
@@ -283,3 +336,52 @@ DESCRIPTION
 
 Manuals for commands are useful to provide the myriad number of options that are availble. These man pages can be navigated using the 
 same keys used with `less`: **Up**, **Down**, **Page Up**, **Page Down**, and **Spacebar** to navigate and **q** to exit.
+
+### Misc. Tips and Tricks
+
+Below are a collection of useful tips and tricks to have handy when working in the command-line
+environment.
+
+#### Command history using `history`
+
+We can take a look at all the commands that we have executed in the current terminal session
+by using the `history` command.
+
+```bash
+> history
+10823  cd ..
+10824  ls
+10825  cd ..
+10826  ls
+10827  ls -ltrh
+10828  cd ..
+10829  ls
+10830  ls -ltrh
+10831  mkdir workshop
+10832  cd workshop
+10833  ls
+10834  vi test.fasta
+10835  grep ACGT seqsA.fasta
+10836  grep -n ACGT seqsA.fasta
+10837  grep -l ACGT seqsA.fasta
+```
+
+**Note: Closing the terminal window or shutting down/restarting your computer will wipe the command history.**
+
+Also worth noting is that the **Up** and **Down** arrow keys can be used to cycle through the history and bring up any commands previously ran:
+
+#### Auto-completing Commands
+
+The **Tab** key can be used to bring up a list of commands or files/directories in the working directory 
+that match whatever we are typing into the terminal.
+
+An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
+
+<img src="/assets/img/labs/lab_2_unix_tab_complete_cmds.png" alt="Tab complete to list commands"/>
+
+A list of all commands that start with the characters `mk` are returned.
+
+Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
+Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `seq`:
+
+<img src="/assets/img/labs/lab_2_unix_tab_complete_files.png" alt="Tab complete to list files in working directory"/>
