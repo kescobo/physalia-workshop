@@ -2,20 +2,23 @@
 <html lang="{{ page.lang | default: site.lang | default: "en" }}">
   {% include head.html %}
   <body>
-
     {% include header.html %}
-
-    <div class="container" style="padding-top: 10px;">
+    <div class="container js-toc-content" style="padding-top: 10px;">
       <div class="row">
-        <div class="col-md-12">{{ content }}</div>
+        <div class="col-sm-2">
+          <nav class="js-toc sticky-top"></nav>
+        </div>
+        <div class="col-sm-8">{{ content }}</div>
       </div>
     </div>
-
     {% include footer.html %}
-
     <!-- JavaScript -->
     <script src="{{'/node_modules/jquery/dist/jquery.min.js' | prepend: site.baseurl}}"></script>
-	<script src="{{'/node_modules/popper.js/dist/popper.min.js' | prepend: site.baseurl}}"></script>
-	<script src="{{'/node_modules/bootstrap/dist/js/bootstrap.min.js' | prepend: site.baseurl}}"></script>
+    <script src="{{'/node_modules/bootstrap/dist/js/bootstrap.min.js' | prepend: site.baseurl}}"></script>
+    {% if page.custom_js %}
+      {% for js_file in page.custom_js %}
+      <script src='/assets/js/{{ js_file }}.js'></script>
+      {% endfor %}
+    {% endif %}
   </body>
 </html>

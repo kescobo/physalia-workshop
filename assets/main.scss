@@ -6,6 +6,7 @@
 
 body {
   background-color: #E5E5E5;
+  position: relative;
 }
 
 .content {
@@ -20,9 +21,11 @@ body {
   color: blue;
 }
 
-.nav.navbar-nav.navbar-right li a span{
+a.nav-link {
   color: white;
 }
+
+ul.nav a:hover { color: grey !important; }
 
 .navbar {
   padding: 2px 0 2px 0 !important;
@@ -48,4 +51,8 @@ div.highlight {
 
 .highlight { 
   padding: 3px 3px 3px 3px;
+}
+
+a.toc-link {
+  height: 0 !important
 }
