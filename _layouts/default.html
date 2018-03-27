@@ -17,7 +17,7 @@
     <script src="{{'/node_modules/bootstrap/dist/js/bootstrap.min.js' | prepend: site.baseurl}}"></script>
     {% if page.custom_js %}
       {% for js_file in page.custom_js %}
-      <script src='/assets/js/{{ js_file }}.js'></script>
+      <script src='{{ '/assets/js/' | prepend: site.baseurl }}{{ js_file }}.js'></script>
       {% endfor %}
     {% endif %}
   </body>

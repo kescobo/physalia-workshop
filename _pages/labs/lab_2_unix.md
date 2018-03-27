@@ -21,7 +21,7 @@ of upcoming labs.
 The Unix directory structure can be visualized as a tree. Each level of the tree indicates a series 
 of folders or files which can have zero or many nested child folders/files.
 
-<img class="mx-auto d-block" src="/assets/img/labs/lab_2_unix_dir_tree.png" alt="Unix Directory Tree Structure" />
+<img class="mx-auto d-block" src="{{ "/assets/img/labs/lab_2_unix_dir_tree.png" | prepend: site.baseurl }}" alt="Unix Directory Tree Structure" />
 
 #### Getting the Working Directory
 It is important to know where we are when navigating the Unix directory structure. The current directory 
@@ -392,11 +392,11 @@ that match whatever we are typing into the terminal.
 
 An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
 
-<img src="/assets/img/labs/lab_2_unix_tab_complete_cmds.png" alt="Tab complete to list commands"/>
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}"alt="Tab complete to list commands"/>
 
 A list of all commands that start with the characters `mk` are returned.
 
 Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
 Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `seq`:
 
-<img src="/assets/img/labs/lab_2_unix_tab_complete_files.png" alt="Tab complete to list files in working directory"/>
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/>

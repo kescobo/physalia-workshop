@@ -1,3 +1,5 @@
+baseurl: "/"
+
 markdown: kramdown
 
 kramdown:
