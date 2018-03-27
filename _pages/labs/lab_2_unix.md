@@ -184,9 +184,9 @@ drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_2
   <b>Excercise #3</b>: Try listing all files that begin with <code>seqs</code> and using the <code>cat</code> command to print out all FASTA files to the screen
 </div>
 
-### Moving and Deleting Files
+### Moving and Deleting Files/Directories
 
-#### Moving files with the `mv` command
+#### Moving Files and Directories
 Moving files is a common operation on the command-line and can be achieved by using the `mv` command.
 
 Let's move the `seqsA.fasta` file from the `sequences/` folder to the `example_1/` folder:
@@ -213,7 +213,33 @@ drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
 -rw-r--r--  1 student  staff   0 Mar 26 17:54 new_sequences.fasta
 ```
 
-#### Removing files with the `rm` command
+#### Creating Directories
+Before we learn to destory (files and directories) it is a good idea to go over creating directories.
+
+Directory creation can be done with the `mkdir` command:
+
+```bash
+> pwd 
+/home/student/data/sequences/example_1
+> mkdir test
+> ls 
+drwxr-xr-x  2 student  staff   64 Mar 26 18:07 input
+drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
+drwxr-xr-x  2 student  staff   64 Mar 26 18:07 test
+-rw-r--r--  1 student  staff   0 Mar 26 17:54 new_sequences.fasta
+```
+
+It is also possible to create several levels of directories in one command by passing the `-p` option to `mkdir`:
+
+```bash
+> mkdir -p test_2/another_one/yet_another
+> ls test_2/
+another_one
+> ls test_2/another_one/
+yet_another
+```
+
+#### Removing Files/Directories
 Deleting files is done using the `rm` command. Caution should be exercised when deleting files on the command-line as no
 prompts or warnings will be given to confirm that files are to be deleted. 
 
@@ -236,7 +262,7 @@ rm: js: is a directory
 ```
 
 <div class="alert alert-success" role="alert">
-  <b>Excercise #4</b>: Move all files that end in <code>.fasta</code> to the <code>example_2</code> directory. Delete this folder using <code>rm</code>
+  <b>Excercise #4</b>: Create a new directory under the <code>sequences</code> folder called <code>to_delete</code> and move all files that end in <code>.fasta</code> to the new directory. Delete this folder using <code>rm</code>
 </div>
 
 ### Full Text Search With `grep`
@@ -246,22 +272,11 @@ Searching the contents of a text file is a useful operation made very easy throu
 
 ```bash
 > cd /home/student/data/sequences
-> grep "ACGT" seqsA.fasta
-ACGTAGGTCATTGACTATATACCA
-GTCAGACCCACCCCGCACGGGGTAAATATGGCACGCGTCCGACCTGGTTCCTGGCGTTCTACGCTGCCACGTGTTC
-ATTAACTGTTGTTTGGTAGCACAAAAGTATTACCATGGTCCTAGAAGTTCGGCACAGTTAGTTCGAGCCTAATGTC
-ACAAATGACGCAGAACGCCAATGAGTGCCAGACATTAGGTGGAGTTCAGTTCGGTAACGGAGAGACTCTGCGGCGT
-ACTTAATTATGCATTTGAAACGCGCCCAAGTGACGCTAGGCAAGTCAGAGCAGGTTCCCGTGTTAGCTTGAGGGTA
-AACATACAAGCCGATTGAAGATGGGTAGGGGGCTTCAAATCGTCCAGCACTCCACAGTACCTCCGAGAGCAAGTAG
-GGCACCCTGTAGTTCGAAGCGGAACTATTTCGAGGGGCGAGCCCACATCGTCTCTTCTGCGGATGACTTAACACGC
-TAGGGAGGTGGAGTCGATTCCATCGATGGTTATAAATCAAAAAATCGGAACGCTGTCTGGAGGATGAATCTAACGG
-TGCGTATCTCGATCGCTCAGTCGCTTTTCGTACTGCGCGAAAGTTCGCACCGCTCATACACTTGGTTCCGAAGCCT
-GTCCTGATATATGAATCCAAACTAGAGCGGGGCTCTTGACGTTTGGAGTTGTAAATATCTAATATTCCAATCGGCT
-TTTACGTGCACCACCGCGGGCGGCTGACGAGGGACTCACACCGAGAAACTAGACAGTTGCGCGCTGGAAGTAGCGC
-CGGCTAAGAAAGACGCCTGGTACAGCAGGACTATGAAACCCGTACAAAGGCAACATCCTCACTTCGGTGAATCGAA
-ACGCGGCATCAAGGTTACTTTTTGGATACCTGAAACAAAACCCATCGTAGTCCTTAGACTTGGGACACTTTCACCC
-TAGGGCCCATATCTGGAAATAGACGCCAAGTTCAATCCGTACTCCGACGTACGATGGAACAGTGTGGATGTGACGA
-GCTTCATTTAT
+> grep > seqsA.fasta
+> sequence_1
+> sequence_2
+> sequence_3
+> sequence_4
 ```
 `grep` will output the lines in the file that match our search term (`ACGT` in the example above).
 
@@ -342,7 +357,7 @@ same keys used with `less`: **Up**, **Down**, **Page Up**, **Page Down**, and **
 Below are a collection of useful tips and tricks to have handy when working in the command-line
 environment.
 
-#### Command history using `history`
+#### Accessing Command History
 
 We can take a look at all the commands that we have executed in the current terminal session
 by using the `history` command.
