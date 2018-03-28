@@ -21,129 +21,177 @@ of upcoming labs.
 The Unix directory structure can be visualized as a tree. Each level of the tree indicates a series 
 of folders or files which can have zero or many nested child folders/files.
 
-<img class="mx-auto d-block" src="{{ "/assets/img/labs/lab_2_unix_dir_tree.png" | prepend: site.baseurl }}" alt="Unix Directory Tree Structure" />
+<img class="mx-auto d-block" src="{{ "/assets/img/labs/lab_2_unix_dir_tree.png" | prepend: site.baseurl }}" alt="Unix Directory Tree Structure"/>
 
 #### Getting the Working Directory
 It is important to know where we are when navigating the Unix directory structure. The current directory 
 you operate out of is called the **Working Directory** and we can print this out by using the `pwd` command:
 
-```bash
-> pwd 
-/home/student
+```console
+vagrant@biobakery:~$ pwd 
+/home/vagrant
 ```
 
 #### Moving Between Directories
 Navigation is primarly handled by the **C**hange **D**irectory command `cd`:
 
-```bash
-> cd data/
-> pwd 
-/home/student/data
+```console
+vagrant@biobakery:~$ cd Documents/
+vagrant@biobakery:~/Documents$ pwd 
+/home/vagrant/Documents
 ```
 
 It is also possible to traverse multiple directories in one `cd` command:
 
-```bash
-> cd data/sequences/example_1/
-> pwd
-/home/student/data/sequences/example_1
+```console
+vagrant@biobakery:~$ cd /usr/local/etc/
+vagrant@biobakery:/usr/local/etc$ pwd
+/usr/local/etc
 ```
+
+**Note**: You may have noticed that a portion of the terminal text updates while we are moving around directories (`vagrant@biobakery`) --
+this is the terminal prompt and displays useful information like our current working directory.
 
 We can navigate backwards up the Unix directory tree by using using the special characters `..` in 
 conjunction with `cd`:
 
-```bash
-> pwd
-/home/student/data/sequences/example_1
-> cd ..
-> pwd 
-/home/student/data/sequences
+```console
+vagrant@biobakery:/usr/local/etc$ pwd
+/usr/local/etc
+vagrant@biobakery:/usr/local/etc$ cd ..
+vagrant@biobakery:/usr/local$ pwd 
+/usr/local
 ```
 
 Note that this can be chained multiple times to navigate backwards several levels in the directory tree:
 
-```bash
-> pwd 
-/home/student/data/sequences
-> cd ../..
-> pwd 
-/home/student
+```console
+vagrant@biobakery:/usr/local$ cd etc/
+vagrant@biobakery:/usr/local/etc$ cd ../..
+vagrant@biobakery:/usr$ pwd 
+/usr
+```
+
+From any location we can return to our home directory by executing the `cd` command alone:
+
+```console
+vagrant@biobakery:/usr$ cd
+vagrant@biobakery:~$ pwd
+/home/vagrant
+```
+
+or by changing directory to the `~` character which is short-hand for our home directory:
+
+```console
+vagrant@biobakery:~$ cd /usr
+vagrant@biobakery:/usr$ cd ~
+vagrant@biobakery:~$ pwd
+/home/vagrant
 ```
 
 <div class="alert alert-success" role="alert">
   <b>Excercise #1</b>: Use the <code>cd</code> and <code>pwd</code> commands to navigate around the home directory.
 </div>
 
-### Listing and Viewing Files
 
-#### Listing files
+### Listing Files
 Now that we know how to navigate around the Unix file structure we will want to see what files/directories are 
 present in our working directory. This is accomplished using the `ls` command:
 
-```bash
-> pwd
-/home/student/data/sequences
-> ls
-example_1   example_2   seqsA.fasta seqsB.fastq
+```console
+vagrant@biobakery:~$ cd
+vagrant@biobakery:~$ pwd
+/home/vagrant
+vagrant@biobakery:~$ ls
+arepa  Desktop  Documents  Downloads  Music  phylophlan  Pictures  Public  Templates  Videos
 ```
 
-We can see that there are multiple files/directories under the `/home/student/data/sequences` location 
-we don't know much about each of these files. The `ls` command can be invoked using several arguments
-which can transform what is returned to us. Arguments are provided in the following format `ls <ARGUMENT> <FILE|DIRECTORY>`.
+We can see that there are multiple directories under the `/home/vagrant/` location but not much 
+more information is returned. This can be fixed by passing options to the `ls` command that transform
+what output is produced
 
-We can use the `-l` command to request a long list of the contents of a directory which is much more detailed than what is 
-provided by the base `ls` command:
+We can use the `-l` option to request a long list of the contents of a directory:
 
-```bash
-> pwd
-/home/student/data/sequences
-> ls -l 
-total 0
-drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_1
-drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_2
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsA.fasta
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsB.fastq
+```console
+vagrant@biobakery:~$ pwd
+/home/vagrant
+vagrant@biobakery:~$ ls -l 
+total 40
+drwxr-xr-x 14 root    root    4096 Aug 31  2017 arepa
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Desktop
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Documents
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Downloads
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Music
+drwxrwxr-x  9 vagrant vagrant 4096 Aug 31  2017 phylophlan
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Pictures
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Public
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Templates
+drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Videos
 ```
 
-Here we get several new pieces of information about the content under the current working directory including permissions, owner, 
-file size and date last updated.
+Several new pieces of information are now provided including file/directory permissions, owner, 
+size and date last updated.
 
 The `ls` command does not restrict us to listing files only in our working directory; the location to any file or directory can 
 be provided with the same results:
 
-```bash
-> pwd
-/home/student/data/sequences
-> ls -l /home/student/data
-total 0
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 hmp2
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
-drwxr-xr-x  6 student  staff  192 Mar 26 18:07 sequences
-
-> ls -l /home/student/data/sequences/example_1
-total 0
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
-
-> ls -l /home/student/data/sequences/seqsA.fasta
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsA.fasta
+```console
+vagrant@biobakery:~$
+vagrant@biobakery:~$ ls -l /home/vagrant/phylophlan/
+total 60
+drwxrwxr-x 5 vagrant vagrant  4096 Aug 31  2017 circlader
+drwxrwxr-x 3 vagrant vagrant  4096 Aug 31  2017 data
+drwxrwxr-x 4 vagrant vagrant  4096 Aug 31  2017 input
+-rw-rw-r-- 1 vagrant vagrant  1082 Aug 31  2017 license.txt
+drwxrwxr-x 2 vagrant vagrant  4096 Aug 31  2017 output
+-rwxrwxr-x 1 vagrant vagrant 31572 Aug 31  2017 phylophlan.py
+drwxrwxr-x 3 vagrant vagrant  4096 Aug 31  2017 pyphlan
+drwxrwxr-x 2 vagrant vagrant  4096 Aug 31  2017 taxcuration
 ```
 
-#### Viewing contents of files using `cat` and `less`
+### Creating Directories
+Directory creation can be done with the `mkdir` command:
+
+```console
+vagrant@biobakery:~$ cd
+vagrant@biobakery:~$ cd Documents/
+vagrant@biobakery:~/Documents$ mkdir labs
+vagrant@biobakery:~/Documents$ ls -l
+total 4
+drwxrwxr-x 2 vagrant vagrant 4096 Mar 28 03:31 labs
+```
+
+It is also possible to create several levels of directories by passing the `-p` option to `mkdir`:
+
+```console
+vagrant@biobakery:~/Documents$ mkdir -p labs/lab_2/data
+vagrant@biobakery:~/Documents$ ls labs
+lab2
+vagrant@biobakery:~/Documents$ ls labs/lab_2
+data
+```
+
+### Downloading Files
+
+
+### Viewing Text Files
 
 We can examine the contents of a specific text file using two methods. The `cat` command will print all the contents of a file
 to our screen in one stroke:
 
-```bash
-> cat /home/student/data/sequences/seqsA.fasta
-\> seqsA
+```console
+vagrant@biobakery:~$ cat /home/vagrant/labs/lab_2/data/sequences/seqsA.fasta
+> sequence 1
 TCTGGCTCGACGCAAGCCATAACACCCCTGTCACATCATAATCGTTTGCAATTCAGGGCTTGATCAACACTGGATTGCCTTTCTCTTAAAGTATTATGCAGGACGGGGTGCGCGTACC
 ATGTAAACCTGTTATAACTTACCTGAGACTAGTTGGAAGTGTGGCTAGATCTTAGCTTACGTTTCTAGTCGGTCCACGTTTGGTTTTTAAGATCCAATGATCTTCAAAACGCTGCAAG
+> sequence 2
 ATTCACAACCTGCTTTACTAAGCGCTGGGTCCTACTGCAGCGGGACTTTTTTTCTAAAGACGTTGAGAGGAGCAGTCGTCAGACCACATAGCTTTCATGTCCTGATCGGAAGGATCGT
 TGGCGCCCGACCCTTAGACTCTGTACTGAGTTCTATAAACGAGCCATTGCATACGAGATCGGTAGATTGATAAGGGACACAGAATATCCCCGGACGCAATAGACGGACAGCTTGGTAT
 CCTAAGCACAGTCGCGCGTCCGAACCTAGCTCTACTTTAGAGGCCCCGGATTCTGGTGCTCGTAGACCGCAGAACCGATTGGGGGGATGTACAACAATATTTGTTAGTCACCTTTGGG
+> sequence 3
 TCACGATCTCCCACCTTACTGGAATTTAGTCCCTGCTATAATTTGCCTTGCATATAAGTTGCGTTACTTCAGCGTCCTAACCGCACCCTTAGCACGAAGACAGATTTGTTCATTCCCA
 TACTCCGGCGTTGGCAGGGGGTTCGCATGTCCCACGTGAAACGTTGCTAAACCCTCAGGTTTCTGAGCGACAAAAGCTTTAAACGGGAGTTCGCGCTCATAACTTGGTCCGAATGCGG
+> sequence 4
 GTTCTTGCATCGTTCGACTGAGTTTGTTTCATGTAGAACGGGCGCAAAGTATACTTAGTTCAATCTTCAATACCTCGTATCATTGTACACCTGCCGGTCACCACCCAACGATGTGGGG
 ACGGCGTTGCAACTTCGAGGACCTAATCTGACCGACCTAGATTCGGCACTGTGGGC
 ```
@@ -151,11 +199,11 @@ ACGGCGTTGCAACTTCGAGGACCTAATCTGACCGACCTAGATTCGGCACTGTGGGC
 This command is not so useful when dealing with larger text files as the contents of the file will print rapidly down the screen. In these cases the `less` command allows us to move through
 multiple "pages" of output in a more controlled fashion:
 
-```bash
-> less /home/student/data/sequences/seqsB.fasta
+```console
+vagrant@biobakery:~$ less /home/vagrant/data/sequences/seqsB.fasta
 ```
 
-Once executed the `less` command takes over the entirety of our terminal window and allows us to scroll down the file using the **Up** and **Down** arrow keys, the **Page Up** or **Page Down** keys, or the **Spacebar** (moves us forward a page at a time). `less` can be exited by pressing the **q** key.
+Once invoked the `less` command takes over the entirety of our terminal window and allows us to scroll down the file using the **Up** and **Down** arrow keys, the **Page Up** or **Page Down** keys, or the **Spacebar** (moves us forward a page at a time). `less` can be exited by pressing the **q** key.
 
 ### A Quick Tangent: The Wildcard Character
 
@@ -164,20 +212,20 @@ wildcard character `*`.
 
 An example would be using the wildcard character to list all fasta files in a directory:
 
-```bash
-> cd /home/student/data/sequences
-> ls -l *.fasta
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsA.fasta
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsB.fastq
+```console
+vagrant@biobakery:~$ cd /home/vagrant/labs/lab_2/data
+vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l *.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsA.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsB.fastq
 ```
 
 We can insert the wildcard character into to make many combinations of partial matches to pass along to Unix commands. Let's list all 
 files that begin wit hthe word `example`:
 
-```bash
-> ls -l example*
-drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_1
-drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_2
+```console
+vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l example*
+drwxr-xr-x  2 vagrant  staff  64 Mar 26 17:54 example_1
+drwxr-xr-x  2 vagrant  staff  64 Mar 26 17:54 example_2
 ```
 
 <div class="alert alert-success" role="alert">
@@ -185,105 +233,79 @@ drwxr-xr-x  2 student  staff  64 Mar 26 17:54 example_2
 </div>
 
 ### Moving and Deleting Files/Directories
-
-#### Moving Files and Directories
 Moving files is a common operation on the command-line and can be achieved by using the `mv` command.
 
 Let's move the `seqsA.fasta` file from the `sequences/` folder to the `example_1/` folder:
 
-```bash
-> cd /home/student/data/sequences
-> mv seqsA.fasta example_1/
-> ls -l example_1/
+```console
+vagrant@biobakery: ~$ cd /home/vagrant/data/sequences
+vagrant@biobakery: ~$ mv seqsA.fasta example_1/
+vagrant@biobakery: ~$ ls -l example_1/
 total 0
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
--rw-r--r--  1 student  staff   0 Mar 26 17:54 seqsA.fasta
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 input
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 output
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsA.fasta
 ```
 
 The `mv` command can also used to rename files/directories by providing a new file/directory name during execution:
 
-```bash
-> cd /home/student/data/sequences/example_1
-> mv seqsA.fasta new_sequences.fasta
-> ls -l 
+```console
+vagrant@biobakery: ~$ cd /home/vagrant/data/sequences/example_1
+vagrant@biobakery: ~$ mv seqsA.fasta new_sequences.fasta
+vagrant@biobakery: ~$ ls -l 
 total 0
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
--rw-r--r--  1 student  staff   0 Mar 26 17:54 new_sequences.fasta
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 input
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 output
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 new_sequences.fasta
 ```
 
-#### Creating Directories
-Before we learn to destory (files and directories) it is a good idea to go over creating directories.
+Deleting files is done using the `rm` command. 
 
-Directory creation can be done with the `mkdir` command:
-
-```bash
-> pwd 
-/home/student/data/sequences/example_1
-> mkdir test
-> ls 
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 output
-drwxr-xr-x  2 student  staff   64 Mar 26 18:07 test
--rw-r--r--  1 student  staff   0 Mar 26 17:54 new_sequences.fasta
-```
-
-It is also possible to create several levels of directories in one command by passing the `-p` option to `mkdir`:
-
-```bash
-> mkdir -p test_2/another_one/yet_another
-> ls test_2/
-another_one
-> ls test_2/another_one/
-yet_another
-```
-
-#### Removing Files/Directories
-Deleting files is done using the `rm` command. Caution should be exercised when deleting files on the command-line as no
-prompts or warnings will be given to confirm that files are to be deleted. 
+**Caution should be exercised when deleting files on the command-line as no
+prompts or warnings will be given to confirm that files are going to be deleted.** 
 
 Let's try deleting the `new_sequences.fasta` file we just renamed:
 
-```bash
-> rm /home/student/data/sequences/example_1/new_sequences.fasta
+```console
+vagrant@biobakery: ~$ rm /home/vagrant/data/sequences/example_1/new_sequences.fasta
 ```
 
 When deleting directories we must supply `rm` with the additional `-rf` arguments to ensure that any files found under 
 the specified directory are also deleted. Failure to provide the `-rf` argument will result in `rm` returning an error:
 
-```bash
-> cd ..
-> pwd
-/home/student/data/sequences
-> rm example_1/
+```console
+vagrant@biobakery: ~$ cd ..
+vagrant@biobakery: ~$ pwd
+/home/vagrant/data/sequences
+vagrant@biobakery: ~$ rm example_1/
 rm: js: is a directory
-> rm -rf example_1/
+vagrant@biobakery: ~$ rm -rf example_1/
 ```
 
 <div class="alert alert-success" role="alert">
   <b>Excercise #4</b>: Create a new directory under the <code>sequences</code> folder called <code>to_delete</code> and move all files that end in <code>.fasta</code> to the new directory. Delete this folder using <code>rm</code>
 </div>
 
+
 ### Full Text Search With `grep`
 
 Searching the contents of a text file is a useful operation made very easy through the use of the 
 `grep` command:
 
-```bash
-> cd /home/student/data/sequences
-> grep > seqsA.fasta
-> sequence_1
-> sequence_2
-> sequence_3
-> sequence_4
+```console
+vagrant@biobakery: ~$ cd /home/vagrant/data/sequences
+vagrant@biobakery: ~$ grep vagrant@biobakery: ~$ seqsA.fasta
+vagrant@biobakery: ~$ sequence_1
+vagrant@biobakery: ~$ sequence_2
+vagrant@biobakery: ~$ sequence_3
+vagrant@biobakery: ~$ sequence_4
 ```
 `grep` will output the lines in the file that match our search term (`ACGT` in the example above).
 
 Options can be passed to `grep` to print out the line number of the match:
 
-```bash
-> grep -n ACGT seqsA.fasta
+```console
+vagrant@biobakery: ~$ grep -n ACGT seqsA.fasta
 2:ACGTAGGTCATTGACTATATACCA
 4:GTCAGACCCACCCCGCACGGGGTAAATATGGCACGCGTCCGACCTGGTTCCTGGCGTTCTACGCTGCCACGTG
 TTCATTAACTGTTGTTTGGTAGCACAAAAGTATTACCATGGTCCTAGAAGTTCGGCACAGTTAGTTCGAGCCTAA
@@ -303,8 +325,8 @@ AGTGTGGATGTGACGAGCTTCATTTAT
 
 Or just the name of the file a match was found in:
 
-```bash
-> grep -l ACGT seqsA.fasta
+```console
+vagrant@biobakery: ~$ grep -l ACGT seqsA.fasta
 seqsA.fasta
 ```
 
@@ -317,10 +339,10 @@ seqsA.fasta
 
 The majority of Unix commands will come with manuals built in that can be accessed using the `man` command:
 
-```bash
-> man ls
+```console
+vagrant@biobakery: ~$ man ls
 ```
-```bash
+```console
 LS(1)                     BSD General Commands Manual                    LS(1)
 
 NAME
@@ -362,8 +384,8 @@ environment.
 We can take a look at all the commands that we have executed in the current terminal session
 by using the `history` command.
 
-```bash
-> history
+```console
+vagrant@biobakery: ~$ history
 10823  cd ..
 10824  ls
 10825  cd ..
@@ -392,11 +414,11 @@ that match whatever we are typing into the terminal.
 
 An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}"alt="Tab complete to list commands"/>
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}"alt="Tab complete to list commands"/vagrant@biobakery: ~$
 
 A list of all commands that start with the characters `mk` are returned.
 
 Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
 Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `seq`:
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/>
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/vagrant@biobakery: ~$
