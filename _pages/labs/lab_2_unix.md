@@ -2,6 +2,7 @@
 layout: default
 title: "Lab #2 - Introduction to Command-line Unix"
 permalink: /labs/2_unix
+is_lab: true
 custom_css: tocbot
 custom_js: 
     - tocbot.min

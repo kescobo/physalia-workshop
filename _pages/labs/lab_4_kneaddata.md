@@ -2,6 +2,7 @@
 layout: default
 title: "Lab #4 - KneadData"
 permalink: /labs/4_kneaddata
+is_lab: true
 custom_css: tocbot
 custom_js: 
     - tocbot.min

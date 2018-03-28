@@ -5,10 +5,14 @@
     {% include header.html %}
     <div class="container js-toc-content" style="padding-top: 10px;">
       <div class="row">
-        <div class="col-sm-2">
-          <nav class="js-toc sticky-top"></nav>
-        </div>
-        <div class="col-sm-8">{{ content }}</div>
+        {% if page.is_lab == true %}
+          <div class="col-sm-2">
+            <nav class="js-toc sticky-top"></nav>
+          </div>
+          <div class="col-sm-8">{{ content }}</div>
+        {% else %}
+          <div class="col-sm-8 offset-sm-2">{{ content }}</div>
+        {% endif %}
       </div>
     </div>
     {% include footer.html %}
