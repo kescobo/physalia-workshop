@@ -171,32 +171,79 @@ vagrant@biobakery:~/Documents$ ls labs/lab_2
 data
 ```
 
-### Downloading Files
+### Downloading and Extracting Compressed Files
+Before moving on we'll want to download some example files that we will play with to our cloud machine. The command-line has no 
+"Save As" prompt as you may be used to when working with a graphical interface but we can use the `curl` command to 
+grab files from a remote location.
 
+```console
+vagrant@biobakery:~/Documents$ cd labs/lab_2/data
+vagrant@biobakery:~/Documents/labs/lab_2/data$ curl -O lab_2_example.tgz https://github.com/biobakery/physalia-workshop/raw/master/data/labs/lab_2_examples.tgz
+```
+
+This file type is a compressed tarball file that we can extract using the `tar` command:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_2/data$ tar xfv lab_2_examples.tgz
+x example_dirA/
+x example_dirA/input/
+x example_dirA/output/
+x example_dirB/
+x example_dirB/story.text
+x sequences_A.fasta
+x sequences_B.fasta
+```
 
 ### Viewing Text Files
-
 We can examine the contents of a specific text file using two methods. The `cat` command will print all the contents of a file
 to our screen in one stroke:
 
 ```console
-vagrant@biobakery:~$ cat /home/vagrant/labs/lab_2/data/sequences/seqsA.fasta
+vagrant@biobakery:~/Documents/labs/lab_2/data$ cat sequences_A.fasta
 > sequence 1
-TCTGGCTCGACGCAAGCCATAACACCCCTGTCACATCATAATCGTTTGCAATTCAGGGCTTGATCAACACTGGATTGCCTTTCTCTTAAAGTATTATGCAGGACGGGGTGCGCGTACC
-ATGTAAACCTGTTATAACTTACCTGAGACTAGTTGGAAGTGTGGCTAGATCTTAGCTTACGTTTCTAGTCGGTCCACGTTTGGTTTTTAAGATCCAATGATCTTCAAAACGCTGCAAG
+CTCGGAAATCGATTTAAATCCGCCTTATATAGGGGAAAACGGGGTGTCGCCTGCTGGTTA
+ACATGACGTTGGTTACAAAGCGTGTCATGTACGACATGCCAGCATACCAGCGGATGTCGA
+CGTCTCAGAGCGCCCCTTCGGTATGAACCAGGAATCTCGGTGTGAGATACGATTTGCCCT
+GTCAGGGTAACGATCTCGTCCACCGCCTCAACCTGAGCGGTATCGGGTAAAAAGAGCGGA
+GTGTTAGGACCGCTAGCTTATCGCGAGATAGGTCCACCTAAATCCGCCCACGGACCAAAG
+TTTGTCACAAGTCCACGACCCTTCCTCCAGAATTATCCCTAATTCCTCAGTGGCCTATGT
+GTCTCCGCCACCGGATCTTTTCTAGTTGATTTTATCTACGATGGCGAGCGGCAAGAAGGT
+ATATAGATGGCGCACTCAATTCCAGACTCCGTCTTCCTCGAGGAGACCAGGCCATTCGTT
+GAGGTTTGCATGTCAAGTCGACTGCTGCGTACGATCCCCCATTCACTGGGGCAACTCGAG
+CAGCTTCGTCTGCGTGGCTTCAAATGCTGTGTCCGGTGGTCAGTTATTTTATCTCTAGTG
+GACTGATGTCGCCTAACGACGTAACCCGTGCCTTATGTGTGAGTAGTTGAGCTACAGCGT
+TAAGCTCAGGACTTACTGGTTAATTTAACGAATTCGATTAAAAGGCGGTTGTGTCTTGTT
+GGAAAGAAAAAAGTCAGACGGGGATGGCAACCGTCATACGTATCACTAGATCACTACACG
+CCAATGCGTTGGGCCGCCATATTTTACACTGAGGTCGGGCGGATTGAGCGAACCGACTCT
+CCGATGAAAACACGGATTGTTCCAAATGGACATACAACCTAAACCAGCGGCATATAATCA
+GGGAGTAGACGTGAGGTGGTCTTCCTCAGGAGTAAATCTTCATATGAGTGGTTCAGCCAT
+CAAACGTCGGGGCATAATAGAGGGAGCTGAGTCTGCGGTT
 > sequence 2
-ATTCACAACCTGCTTTACTAAGCGCTGGGTCCTACTGCAGCGGGACTTTTTTTCTAAAGACGTTGAGAGGAGCAGTCGTCAGACCACATAGCTTTCATGTCCTGATCGGAAGGATCGT
-TGGCGCCCGACCCTTAGACTCTGTACTGAGTTCTATAAACGAGCCATTGCATACGAGATCGGTAGATTGATAAGGGACACAGAATATCCCCGGACGCAATAGACGGACAGCTTGGTAT
-CCTAAGCACAGTCGCGCGTCCGAACCTAGCTCTACTTTAGAGGCCCCGGATTCTGGTGCTCGTAGACCGCAGAACCGATTGGGGGGATGTACAACAATATTTGTTAGTCACCTTTGGG
-> sequence 3
-TCACGATCTCCCACCTTACTGGAATTTAGTCCCTGCTATAATTTGCCTTGCATATAAGTTGCGTTACTTCAGCGTCCTAACCGCACCCTTAGCACGAAGACAGATTTGTTCATTCCCA
-TACTCCGGCGTTGGCAGGGGGTTCGCATGTCCCACGTGAAACGTTGCTAAACCCTCAGGTTTCTGAGCGACAAAAGCTTTAAACGGGAGTTCGCGCTCATAACTTGGTCCGAATGCGG
-> sequence 4
-GTTCTTGCATCGTTCGACTGAGTTTGTTTCATGTAGAACGGGCGCAAAGTATACTTAGTTCAATCTTCAATACCTCGTATCATTGTACACCTGCCGGTCACCACCCAACGATGTGGGG
-ACGGCGTTGCAACTTCGAGGACCTAATCTGACCGACCTAGATTCGGCACTGTGGGC
+GTTTACAGTCTATACTGTCCCCCCCGAAGCCACAGCTATCACAAGATCAGTCGGGCTGAG
+GGGGTATGGTTGGATTACACTTCGAAACTTCGATTCAGTTGTACCGGGTGTTATCTGTGA
+GTGTTTCGAACATCCAGCCTGTACTACTCCGACTATGGGTCGGCGGGCGACGAGAGACCC
+GTAGGGCTTCCGTCTCCCATTTCGGTGTTCGAATGGTAAGTGGGTGTGGGGTATGTAAGA
+CATTTACGCCTCCCTAAAGATGGCTACGAAAGCAAATTACGGAGAAAATGGCACTCGTCA
+ACACCAATGCGCCTTCCGGCTTTCAGGAAAGAACCCGTGAGGTAACACCGAGTTCTAGGG
+GGGCGTTAGTTTTACTCGTATACAGAAAACTCCCCCAGTCCACCTTGGGCCCTACCTCGT
+TCTCGTGCGAATTAGCCTTATAGCGAAGTTGTGCGTTGCAAGGTATTCGTAAACGCGCGT
+GGTCTATCACAAATGATGGCCAGTGAGGTTCATAGGAACTGCTCCAACCCGAGAGACACA
+TTCTCATAGATGTTAACCAGAGCTCGTGGATCAGCAACATTAAAGGGAACATTGTGCAAC
+ATGCAACTAGAAGAGCTCGATCGCCGTCTCTGACTCTAAACCGAGGGGCAGGACCCCGGA
+TCAATGAACAGAGTCAAGCCTATGATCACCGTCTTATCAAACATACATCCACATGTAACG
+TCTAATCATCAGGTGCGCCGATATTTAAAGTGGCGCTGGTGTAAACCGTGGAACGTACGT
+AATGCACTCGCTATAGAGAGCTTAGACGTGAGCATCGCCGTGCCCTTGTGATCCGGTATG
+CCCAGCCTGTAGCACTCCGCTCGGGTATCACATGAATTTAGGTCAAGTCTCTCCCTCGTT
+AAGATCGAAGTGCCATCCGGCAGAGCTGCTTCAAGACTCGAAGAATCAGTCTGTGTTGTA
+CGAAGTCCACTAATACCACCCTGCTTCATCTGGAATTTCG
 ```
 
-This command is not so useful when dealing with larger text files as the contents of the file will print rapidly down the screen. In these cases the `less` command allows us to move through
+<div class="alert alert-success" role="alert">
+  <b>Excercise #2</b>: Use the <code>cat</code> command to view the contents of the <code>sequences_B.fasta</code> file.
+</div>
+
+We can see `cat` is not so useful when dealing with larger text files as the contents of the file will print rapidly down the screen. In these cases the
+`less` command allows us to move through
 multiple "pages" of output in a more controlled fashion:
 
 ```console
@@ -215,8 +262,11 @@ An example would be using the wildcard character to list all fasta files in a di
 ```console
 vagrant@biobakery:~$ cd /home/vagrant/labs/lab_2/data
 vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l *.fasta
--rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsA.fasta
--rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsB.fastq
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_A.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_B.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_C.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_D.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_E.fasta
 ```
 
 We can insert the wildcard character into to make many combinations of partial matches to pass along to Unix commands. Let's list all 
@@ -238,25 +288,28 @@ Moving files is a common operation on the command-line and can be achieved by us
 Let's move the `seqsA.fasta` file from the `sequences/` folder to the `example_1/` folder:
 
 ```console
-vagrant@biobakery: ~$ cd /home/vagrant/data/sequences
-vagrant@biobakery: ~$ mv seqsA.fasta example_1/
-vagrant@biobakery: ~$ ls -l example_1/
+vagrant@biobakery:~/Documents/labs/lab_2/data$ mv sequences_B.fasta example_dirB/
+vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l example_dirB/
 total 0
-drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 output
--rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 seqsA.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_B.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_F.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_G.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_H.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 story.txt
 ```
 
 The `mv` command can also used to rename files/directories by providing a new file/directory name during execution:
 
 ```console
-vagrant@biobakery: ~$ cd /home/vagrant/data/sequences/example_1
-vagrant@biobakery: ~$ mv seqsA.fasta new_sequences.fasta
-vagrant@biobakery: ~$ ls -l 
+vagrant@biobakery:~/Documents/labs/lab_2/data$ mv sequences_A.fasta new_sequencesA.fasta
+vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l 
 total 0
-drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 input
-drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 output
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 example_dirB
+drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 example_dirA
 -rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 new_sequences.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_C.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_D.fasta
+-rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_E.fasta
 ```
 
 Deleting files is done using the `rm` command. 
@@ -267,23 +320,22 @@ prompts or warnings will be given to confirm that files are going to be deleted.
 Let's try deleting the `new_sequences.fasta` file we just renamed:
 
 ```console
-vagrant@biobakery: ~$ rm /home/vagrant/data/sequences/example_1/new_sequences.fasta
+vagrant@biobakery:~/Documents/labs/lab_2/data$ rm new_sequencesA.fasta
 ```
 
 When deleting directories we must supply `rm` with the additional `-rf` arguments to ensure that any files found under 
 the specified directory are also deleted. Failure to provide the `-rf` argument will result in `rm` returning an error:
 
 ```console
-vagrant@biobakery: ~$ cd ..
-vagrant@biobakery: ~$ pwd
-/home/vagrant/data/sequences
-vagrant@biobakery: ~$ rm example_1/
-rm: js: is a directory
-vagrant@biobakery: ~$ rm -rf example_1/
+vagrant@biobakery:~/Documents/labs/lab_2/data$ pwd
+/home/vagrant/Documents/labs/lab_2/data
+vagrant@biobakery:~/Documents/labs/lab_2/data$ rm example_dirA/
+rm: example_dirA: is a directory
+vagrant@biobakery:~/Documents/labs/lab_2/data$ rm -rf example_dirA/
 ```
 
 <div class="alert alert-success" role="alert">
-  <b>Excercise #4</b>: Create a new directory under the <code>sequences</code> folder called <code>to_delete</code> and move all files that end in <code>.fasta</code> to the new directory. Delete this folder using <code>rm</code>
+  <b>Excercise #4</b>: Create a new directory under the <code>data</code> folder called <code>to_delete</code> and move all files that end in <code>.fasta</code> to the new directory. Delete this folder using <code>rm</code>
 </div>
 
 
@@ -293,46 +345,44 @@ Searching the contents of a text file is a useful operation made very easy throu
 `grep` command:
 
 ```console
-vagrant@biobakery: ~$ cd /home/vagrant/data/sequences
-vagrant@biobakery: ~$ grep vagrant@biobakery: ~$ seqsA.fasta
-vagrant@biobakery: ~$ sequence_1
-vagrant@biobakery: ~$ sequence_2
-vagrant@biobakery: ~$ sequence_3
-vagrant@biobakery: ~$ sequence_4
+vagrant@biobakery:~/Documents/labs/lab_2/data$ cd example_dirB/
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB$ grep ">" sequences_B.fasta
+> sequence 3
+> sequence 4
+> sequence 5
+> sequence 6
+> sequence 7
+> sequence 8
+> sequence 9
+> sequence 10
 ```
-`grep` will output the lines in the file that match our search term (`ACGT` in the example above).
 
-Options can be passed to `grep` to print out the line number of the match:
+`grep` will output the lines in the file that match our search term (`>` in the example above).
+
+An option can be passed to `grep` to print out the line number of a match in the specified file:
 
 ```console
-vagrant@biobakery: ~$ grep -n ACGT seqsA.fasta
-2:ACGTAGGTCATTGACTATATACCA
-4:GTCAGACCCACCCCGCACGGGGTAAATATGGCACGCGTCCGACCTGGTTCCTGGCGTTCTACGCTGCCACGTG
-TTCATTAACTGTTGTTTGGTAGCACAAAAGTATTACCATGGTCCTAGAAGTTCGGCACAGTTAGTTCGAGCCTAA
-TGTCACAAATGACGCAGAACGCCAATGAGTGCCAGACATTAGGTGGAGTTCAGTTCGGTAACGGAGAGACTCTGC
-GGCGTACTTAATTATGCATTTGAAACGCGCCCAAGTGACGCTAGGCAAGTCAGAGCAGGTTCCCGTGTTAGCTTG
-AGGGTAAACATACAAGCCGATTGAAGATGGGTAGGGGGCTTCAAATCGTCCAGCACTCCACAGTACCTCCGAGAG
-CAAGTAGGGCACCCTGTAGTTCGAAGCGGAACTATTTCGAGGGGCGAGCCCACATCGTCTCTTCTGCGGATGACT
-TAACACGCTAGGGAGGTGGAGTCGATTCCATCGATGGTTATAAATCAAAAAATCGGAACGCTGTCTGGAGGATGA
-ATCTAACGGTGCGTATCTCGATCGCTCAGTCGCTTTTCGTACTGCGCGAAAGTTCGCACCGCTCATACACTTGGT
-TCCGAAGCCTGTCCTGATATATGAATCCAAACTAGAGCGGGGCTCTTGACGTTTGGAGTTGTAAATATCTAATAT
-TCCAATCGGCTTTTACGTGCACCACCGCGGGCGGCTGACGAGGGACTCACACCGAGAAACTAGACAGTTGCGCGC
-TGGAAGTAGCGCCGGCTAAGAAAGACGCCTGGTACAGCAGGACTATGAAACCCGTACAAAGGCAACATCCTCACT
-TCGGTGAATCGAAACGCGGCATCAAGGTTACTTTTTGGATACCTGAAACAAAACCCATCGTAGTCCTTAGACTTG
-GGACACTTTCACCCCTAGGGCCCATATCTGGAAATAGACGCCAAGTTCAATCCGTACTCCGACGTACGATGGAAC
-AGTGTGGATGTGACGAGCTTCATTTAT
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB$ grep -n ">" sequences_B.fasta
+1:> sequence 3
+19:> sequence 4
+38:> sequence 5
+56:> sequence 6
+74:> sequence 7
+92:> sequence 8
+110:> sequence 9
+128:> sequence 10
 ```
 
 Or just the name of the file a match was found in:
 
 ```console
-vagrant@biobakery: ~$ grep -l ACGT seqsA.fasta
-seqsA.fasta
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB$ grep -l ">" sequences_B.fasta
+sequences_B.fasta
 ```
 
 <div class="alert alert-success" role="alert">
-  <b>Excercise #5</b>: Search all FASTA files for the nucleotide sequence <code>GTCAGACC</code> in the 
-  sequences folder.
+  <b>Excercise #5</b>: Search all FASTA files for the nucleotide sequence <code>TACTACTCCGACT</code> in the 
+  <code>examples_dirB</code> directory.
 </div>
 
 ### Unix Manual Pages
@@ -340,7 +390,7 @@ seqsA.fasta
 The majority of Unix commands will come with manuals built in that can be accessed using the `man` command:
 
 ```console
-vagrant@biobakery: ~$ man ls
+vagrant@biobakery:~$ man ls
 ```
 ```console
 LS(1)                     BSD General Commands Manual                    LS(1)
@@ -385,22 +435,19 @@ We can take a look at all the commands that we have executed in the current term
 by using the `history` command.
 
 ```console
-vagrant@biobakery: ~$ history
+vagrant@biobakery:~$ history
 10823  cd ..
 10824  ls
 10825  cd ..
 10826  ls
-10827  ls -ltrh
+10827  ls -l
 10828  cd ..
 10829  ls
-10830  ls -ltrh
-10831  mkdir workshop
-10832  cd workshop
+10830  ls -l
 10833  ls
-10834  vi test.fasta
 10835  grep ACGT seqsA.fasta
-10836  grep -n ACGT seqsA.fasta
-10837  grep -l ACGT seqsA.fasta
+10836  grep -n ">" seqsA.fasta
+10837  grep -l ">" seqsA.fasta
 ```
 
 **Note: Closing the terminal window or shutting down/restarting your computer will wipe the command history.**
