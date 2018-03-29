@@ -462,11 +462,11 @@ that match whatever we are typing into the terminal.
 
 An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}"alt="Tab complete to list commands"/vagrant@biobakery: ~$
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}" alt="Tab complete to list commands"/>
 
 A list of all commands that start with the characters `mk` are returned.
 
 Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
 Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `seq`:
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/vagrant@biobakery: ~$
+<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/>
