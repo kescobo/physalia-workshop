@@ -186,13 +186,13 @@ This file type is a compressed tarball file that we can extract using the `tar` 
 
 ```console
 vagrant@biobakery:~/Documents/labs/lab_2/data$ tar xfv lab_2_examples.tgz
-x example_dirA/
-x example_dirA/input/
-x example_dirA/output/
-x example_dirB/
-x example_dirB/story.text
-x sequences_A.fasta
-x sequences_B.fasta
+example_dirA/
+example_dirA/input/
+example_dirA/output/
+example_dirB/
+example_dirB/story.text
+sequences_A.fasta
+sequences_B.fasta
 ```
 
 ### Viewing Text Files
