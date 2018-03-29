@@ -16,35 +16,50 @@ KneadData.**
 
 ### Lab Setup
 
-Before we can start using KneadData we are going to want to grab all the necessary input files
-and databases required for the lab.
+Most of the required files are distributed with the KneadData package and can be copied from the 
+install directory. 
 
 #### Creating our Workspace
 Let's start off by creating a clean space to do our work from. We can create a new folder under the 
-`/home/student/labs` directory:
+`/home/vagrant/Document/labs` directory:
 
-```bash
-> cd /home/student/labs
-> mkdir lab_4_kneaddata
-> cd lab_4_kneaddata
+```console
+vagrant@biobakery:~$ cd /home/vagrant/Documents/labs
+vagrant@biobakery:~/Documents/labs$ mkdir -p lab_4/db lab_4/input lab_4/output
+vagrant@biobakery:~/Documents/labs$ cd lab_4/
 ```
 
-#### Downloading Input Files
+#### Downloading and Extracting Input Files
+All input files and database files that will be used for this lab can be downloaded to our cloud instance 
+from the workshop website. 
 
-We can use the `wget` command ([from the Unix lab]({{ 'labs/2_unix#Downloading%20Files' | prepend: site.baseurl}})) to download the input sequence files found at the following locations:
+We can use the `curl` command ([from the Unix lab]({{ 'labs/2_unix#Downloading%20Files' | prepend: site.baseurl}})) to download the input sequence files found at the following locations:
 
-* [https://biobakery.github.io/physalia-workshop/data/lab_4_inputs.tgz](https://biobakery.github.io/physalia-workshop/data/lab_4_inputs.tgz)
-
-
-```bash
-> wget https://biobakery.github.io/physalia-workshop/data/lab_4_inputs.tgz /home/student/labs/lab_4_kneaddata/
+```console
+vagrant@biobakery:~/Documents/labs/lab_4$ curl -O lab_4_examples.tgz https://github.com/biobakery/physalia-workshop/raw/master/data/labs/lab_4_examples.tgz
+vagrant@biobakery:~/Documents/labs/lab_4$ tar xfv lab_4_examples.tgz
+x database/
+x database/demo_db.3.bt2
+x database/demo_db.2.bt2
+x database/demo_db.1.bt2
+x database/demo_db.4.bt2
+x database/demo_db.rev.1.bt2
+x database/demo_db.rev.2.bt2
+x input/
+x input/demo.fastq
+x output/
 ```
 
-Once the file has been downloaded we can use the `tar` command to extract it:
+### Baseline Quality Control Statistics
 
-```bash
-tar xfv lab_4_inputs.tgz
-<TAR OUTPUT GOES HERE>
+It's a good idea to take a look at the baseline QC statistics for a dataset prior to diving into any more invovled QC. This can give us an idea of the quality of our sequences,
+how much sequence we may stand to lose, and can influence the approach taken in downstream QC steps.
+
+(https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)[FastQC] provides us with a quick and easy way to visualize QC statistics for a sequence dataset. Launch FastQC 
+by typing the `fastqc` command in the terminal:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_4$ fastqc
 ```
 
 ### Running KneadData
