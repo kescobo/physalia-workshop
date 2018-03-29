@@ -462,11 +462,20 @@ that match whatever we are typing into the terminal.
 
 An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_cmds.png" | prepend: site.baseurl }}" alt="Tab complete to list commands"/>
+```console
+vagrant@biobakery:~$ mk
+mkdir             mkfontdir         mkfs.btrfs        mkfs.ext4         mkfs.msdos        mkhomedir_helper  mkmanifest        mksquashfs
+mkdosfs           mkfontscale       mkfs.cramfs       mkfs.ext4dev      mkfs.ntfs         mkinitramfs       mk_modmap         mkswap
+mke2fs            mkfs              mkfs.ext2         mkfs.fat          mkfs.vfat         mkisofs           mknod             mktemp
+mkfifo            mkfs.bfs          mkfs.ext3         mkfs.minix        mkfs.xfs          mklost+found      mkntfs            mkzftree
+```
 
 A list of all commands that start with the characters `mk` are returned.
 
 Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
-Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `seq`:
+Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `sequences_` under the `/home/vagrant/Documents/labs/lab_2/data/example_dirB/sequences/` directory.
 
-<img src="{{ "/assets/img/labs/lab_2_unix_tab_complete_files.png" | prepend: site.baseurl }}" alt="Tab complete to list files in working directory"/>
+```console
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB/sequences$ ls sequences_
+sequences_X.fasta  sequences_Y.fasta  sequences_Z.fasta
+```

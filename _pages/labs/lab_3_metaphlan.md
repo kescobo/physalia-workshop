@@ -1,10 +1,6 @@
 ---
 layout: default
 title: "Lab #3 - MetaPhlAn"
-permalink: /labs/3_metaphlan
 is_lab: true
-custom_css: tocbot
-custom_js: 
-    - tocbot.min
-    - labs
+remote_url: https://bitbucket.org/biobakery/biobakery/wiki/metaphlan2
 ---
