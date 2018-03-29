@@ -1,4 +1,4 @@
-baseurl: "physalia-workshop"
+baseurl: "/physalia-workshop"
 
 markdown: kramdown
 
