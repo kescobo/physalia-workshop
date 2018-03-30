@@ -23,12 +23,16 @@ for parallelization.
 This lab will guide us through understanding how to piece together the individual components 
 that AnADAMA2 uses in describing a workflow 
 
-### Lab Setup
-Before we dive into writting our first AnADAMA2 workflow we'll need to go over just a little bit more background info.
+### Background Info
 
+We're going to take a look again at some of the background info that we need to understand the components and how they come together 
+in AnADAMA2. 
+
+<!-- Not so sure about the inclusion of this section here; might be better to have this in the lecture itself -->
 #### AnADAMA2 Components (again)
 
-Before we jump into writing our first workflow let's go over (again) a couple
+Let's define and expand on the workflow, task, and 
+BeforeV we jump into writing our first workflow let's go over (again) a couple
 definitions of the building blocks of AnADAMA2:
 
 -   **Workflow**
@@ -45,9 +49,11 @@ definitions of the building blocks of AnADAMA2:
     -   An item that is required to run the task (i.e. input file).
     -   All dependencies of a task must exist before the task can be
         run.
+-   **Document**
+    - A report that pulls together outputs from targets and summarizes the results of a workflow.
+    - Can generate in PDF or HTML.
 
-
-Diagramed the relationship between dependency, task, and target would look like so:
+Diagrammed the relationship between dependency, task, and target would look like so:
 
 <img src="{{ "/assets/img/labs/lab_13_dependency_task_target.png" | prepend: site.baseurl }}" alt="AnADAMA2: Dependency, Task, and Target relationship."/>
 
@@ -60,7 +66,10 @@ and remove tandem repeats from a sequence dataset the DAG could look something l
 
 <img src="{{ "/assets/img/labs/lab_13_anadama2_dag.png" | prepend: site.baseurl }}" alt="AnADAMA2: Example direct acyclic graph."/>
 
-#### Setting up Development Environment
+### Lab Setup
+Now that we've brushed back up on AnADAMA2 concepts we can start setting up our working environment and dive into writing our first workflow.
+
+#### Development Environment
 
 As with previous labs, we're going to want to create our lab environment under the `/home/vagrant/Documents/labs` directory:
 
@@ -76,36 +85,75 @@ input  output  src
 And now we can go ahead and download the input data we will be using for the lab:
 
 ```console
-vagrant@biobakery:~/Documents/labs/lab_13$ cd input/
-vagrant@biobakery:~/Documents/labs/lab_13/input/$ curl -O lab_13_examples.tgz https://github.com/biobakery/physalia-workshop/raw/master/data/labs/lab_13_examples.tgz
-vagrant@biobakery:~/Documents/labs/lab_13/input/$ tar xfv lab_13_examples.tgz 
+vagrant@biobakery:~/Documents/labs/lab_13$ cd
+vagrant@biobakery:~/Documents/labs/lab_13/$ curl -O lab_13_examples.tgz https://github.com/biobakery/physalia-workshop/raw/master/data/labs/lab_13_examples.tgz
+vagrant@biobakery:~/Documents/labs/lab_13/$ tar xfv lab_13_examples.tgz 
+p136C_R1.fastq.gz
+p136C_R2.fastq.gz
+p144C_R1.fastq.gz
+p144C_R2.fastq.gz
 ```
+
+Our input dataset are highly subsetted oral cancer microbiome samples from the [Schmidt et al. (PLoS ONE 2014)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0098741) and distributed in the [Langille Lab's excellent Metagenomic Tutorial](https://github.com/LangilleLab/microbiome_helper/wiki/Metagenomics-Tutorial-(Humann2)). We'll be borrowing two samples here (and overlapping some of their analysis!) to demonstrate how to write an AnADAMA2 workflow.
+
+We can hop into the `src` directory and start writting out workflow.
+
+#### Editing Text with gedit
+
+For this lab we will be modifying AnADAMA2 python code and will make use of the `gedit` text editor:
+
+```console
+vagrant@biobakery:~$ gedit &
+```
+
+<img src="{{ "/assets/img/labs/lab_13_gedit.png" | prepend: site.baseurl }}" alt="AnADAMA2: Dependency, Task, and Target relationship."/>
+
+We can keep this gedit window open in the background as we will return to it when we open up our workflow code.
 
 ### Writing a Basic Workflow
 
-A basic workflow script can be found in the examples folder in the
-source repository named `exe_check.py`. The script `exe_check.py` gets a
-list of the global executables and also the local executables (those for
-the user running the script). It then checks to see if there are any
-global executables that are also installed locally. This script shows
-how to specify dependencies and targets in the commands directly. Lines
-4-6 of the example script show targets with the format and
-dependencies with the format.
+Just to get ourselves familiar with how a very basic workflow is structured we're going to "write" our first workflow to move our sequence files from the base `lab_13` folder to the `input` folder.
 
-To run this example simply execute the script directly:
+```python
+import glob
+import os
+
+from anadama2 import Workflow
+
+
+workflow = Workflow(version='1.0', description='Move sequence files workflow')
+args = workflow.parse_args()
+
+sequence_files = os.glob(os.path.join(args.input, '*.fastq.gz'))
+
+workflow.add_task('mv [target[0]] [depends[0]]',
+                  targets=args.output
+                  depends=sequence_files[0])
+
+workflow.go()                  
+```
+
+We'll ignore the majority of the Python code here in the interest of time (and sanity) and concentrate on the AnADAMA2 portions of the code.
+
+```python 
+workflow.add_task('mv [target[0]] [depends[0]]',
+                  targets=args.output
+                  depends=sequence_files[0])
+```
+
 
     $ python exe_check.py
 
 The contents of this script are as follows (line numbers are shown for
 clarity):
 ```python
-1 from anadama2 import Workflow
-2
-3 workflow = Workflow(remove_options=["input","output"])
-4 workflow.do("ls /usr/bin/ | sort > [t:global_exe.txt]")
-5 workflow.do("ls $HOME/.local/bin/ | sort > [t:local_exe.txt]")
-6 workflow.do("join [d:global_exe.txt] [d:local_exe.txt] > [t:match_exe.txt]")
-7 workflow.go()
+ from anadama2 import Workflow
+
+ workflow = Workflow(remove_options=["input","output"])
+ workflow.do("ls /usr/bin/ | sort > [t:global_exe.txt]")
+ workflow.do("ls $HOME/.local/bin/ | sort > [t:local_exe.txt]")
+ workflow.do("join [d:global_exe.txt] [d:local_exe.txt] > [t:match_exe.txt]")
+ workflow.go()
 ```
 
 The first line imports AnADAMA2 and the third line creates an instance
