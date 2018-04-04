@@ -109,11 +109,11 @@ The log file genreated by MEGAHIT gives us a very quick peek into the quality of
 Let's start out by looking to see what options we can pass to MetaQUAST:
 
 ```console
-vagrant@biobakery:~/Documents/labs/lab_14$ python metaquast.py --help
+vagrant@biobakery:~/Documents/labs/lab_14$ metaquast.py --help
 MetaQUAST: QUality ASsessment Tool for Metagenome Assemblies
 Version: 4.6.3
 
-Usage: python metaquast.py [options] <files_with_contigs>
+Usage: python /usr/local/bin/metaquast.py [options] <files_with_contigs>
 
 Options:
 -o  --output-dir  <dirname>   Directory to store all result files [default: quast_results/results_<datetime>]
@@ -145,6 +145,34 @@ vagrant@biobakery:~/Documents/labs/lab_14/assembly$ mkdir qc
     </div>        
 </div>
 
+QUAST generates both a text based report and a HTML web-based graphical report:
+
+**Text Report**: `/home/vagrant/Documents/labs/lab_14/assembly/qc/megahit-report/combined-report.txt`
+**HTML Report** `/home/vagrant/Documents/labs/lab_14/assembly/qc/megahit-report/report.html`
+
+Let's go ahead and open up our HTML report in Firefox:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ firefox megahit-report/report.html &
+```
+
+<img src="{{ "/assets/img/labs/lab_14_quast.png" | prepend: site.baseurl }}" alt="QUAST HTML Report"/>
+
+In absence of supplying any reference genomes to attempt to align our contigs against the SILVA 16S database is used to BLAST and identify any potential genomes. These results are not very exciting but we can play around with some of the functionality to explore the different functionality metaQUAST provides to us.
+
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-exclamation-triangle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Excercise #3</b>: Explore the features availble in the metaQUAST HTML report. Specifically take a look at the KRONA graph and Icarus contig viewer.
+        </div>
+    </div>        
+</div>
+
+#### Comparing Multiple Assemblies
+
 Using a quality report of one assembly by itself does give us some key metrics to know when our assemblies are of the lowest quality but things become harder when
 we try to differentiate between good, OK and bad assemblies. In some cases it is helpful to have multiple assemblies (generated using different *k*-mer sizes or using different software) and compare them against each other to see how vast (or small) some of the statistics differ.
 
@@ -155,14 +183,13 @@ vagrant@biobakery:~/Documents/labs/lab_14/assembly/metaspades$ ls -l
 total 12144
 -rw-rw-r-- 1 vagrant vagrant 12432359 Apr  4 13:50 metaspades.contig.fa
 ```
-
 <div class="alert alert-success" role="alert">
     <div class="row">
         <div class="col-1 alert-icon-col">
             <span class="fa fa-exclamation-triangle fa-fw"></span>
         </div>
         <div class="col">
-            <b>Excercise #3</b>: Run MetaQUAST on the metaSPAdes assembled contigs to produce another summary report to do comparisons with.
+            <b>Excercise #4</b>: Run MetaQUAST on the metaSPAdes assembled contigs to produce another summary report to do comparisons with.
             Write the output reports to the <code>/home/vagrant/Documents/labs/lab_14/assembly/qc</code> directory. 
         </div>
     </div>        
@@ -171,10 +198,12 @@ total 12144
 We can concatenate our two assembly reports using the Unix `paste` and `cut` commands like so:
 
 ```console
-
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/$ cd qc/
 vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ paste *report.txt | cut -f1-2, 4 > merged_report.txt
 vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ less merged_report.txt
 ```
+
+
 
 ### Visualizing Assembly: Bandage
 
