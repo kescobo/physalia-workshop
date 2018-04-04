@@ -63,7 +63,7 @@ the consensus sequences and between the consensus sequences and a set of
 reference proteins. This information is used to construct a set of
 representative markers for the families.
 
-![ShortBRED Identify schematic](/img/labs/lab_8_identify.png)
+<img src="{{ "/assets/img/labs/lab_8_identify.png" | prepend: site.baseurl }}" alt=""/>
 
 #### 2.1 Input Files
 
@@ -231,8 +231,7 @@ found in the data. This script takes the FASTA file of markers and
 quantifies their relative abundance in a FASTA file of nucleotide
 metagenomic reads.
 
-![ShortBRED Quantify schematic](/img/labs/lab_8_quantify.png)
-
+<img src="{{ "/assets/img/labs/lab_8_quantify.png" | prepend: site.baseurl }}" alt=""/>
 
 #### 3.1 Input Files
 
@@ -240,7 +239,11 @@ The input files required for the script are the following (Sample input
 files for the purpose of this tutorial are provided) :
 
 -   Markers file (generated from Section 1)
--   Short nucleotide reads ([shortbred_demo_reads.fasta](#))
+-   Short nucleotide reads (shortbred_demo_reads.fasta)
+
+ShortBRED uses the markers file to generate a blast database for our short
+reads, focusing specifically on the unique markers. This makes the search
+substantially faster and more accurate.
 
 #### 3.2 Running ShortBRED-Quantify
 
