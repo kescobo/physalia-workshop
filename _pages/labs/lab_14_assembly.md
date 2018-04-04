@@ -99,6 +99,10 @@ the output directory using the `-o` option.
 
 **In the essence of time we are going to let this assembly run and move onto some pre-computed contigs for our downstream analysis**
 
+**These finished assemblies can be found under the following directory:**
+
+- `/home/vagrant/Documents/labs/lab_14/assemblies/megahit_finished`
+
 ### Assessing Assembly Quality
 
 Assessing the quality of a metagenomic assembly is vastly different in comparisong to a single genome assembly. Just the standard metrics (N50, number of contigs, contig length) may not be enough to give us an accurate picture. We will explore some of the more surface-level statistics available to us and return to this topic later in the lab to discuss more relevant ways to assess assembly quality.
@@ -195,17 +199,53 @@ total 12144
     </div>        
 </div>
 
-Take a look at the metaQUAST HTML report for the MetaSPAdes contigs.
+Take a look at the metaQUAST HTML report for the MetaSPAdes contigs. 
 
 We can concatenate our two assembly reports using the Unix `paste` and `cut` commands like so:
 
 ```console
 vagrant@biobakery:~/Documents/labs/lab_14/assembly/$ cd qc/
-vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ paste *report.txt | cut -f1-2, 4 > merged_report.txt
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ paste *report.txt > merged_report.txt
 vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ less merged_report.txt
 ```
 
+Take a look at the merged assembly report in `less`. Is one assembly "better" than the other?
 
+### Visualizing Assembly with Bandage
 
-### Visualizing Assembly: Bandage
+Bandage allows us to examine the de Bruijn graphs created by several of the more popular assemblers (Velvet, SPAdes, MEGAHIT, etc.) and visualizes the paths that were taken in creating the contigs that were produced. We can use this information to again get an idea of how well each assembler my have performed but even more exciting is that by visualizing the paths used in constructing the contigs we can potentially identify loops and dead-ends which could be candidates to be fixed.
 
+To load our MEGAHIT contigs into Bandage we will first need to convert them into FASTG format using the `megahit_toolkit` application:
+
+<!-- Why are we using k99 here instead of any of the others? -->
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/assembly$ cd combined/intermediate_contigs/
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/combined/intermediate_contigs$ megahit_toolkit contig2fastg 99 k99.contigs.fa > k99.fastg
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/combined/intermediate_contigs$ cp k99.fastg ../megahit.fastg
+```
+
+Simple enough, no? Now we can jump right into Bandage by launching it from the command-line:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ Bandage &
+```
+
+Use the *File* -> *Open* dialog menu to find our contig graph file that we just created at `/home/vagrant/Documents/labs/lab_14/assembly/combined/megahit.fastg`
+
+<img src="{{ "/assets/img/labs/lab_14_bandage_megahit.png" | prepend: site.baseurl }}" alt="Bandage Contig Visualization"/>
+
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-exclamation-triangle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Excercise #5</b>: Explore our contigs in de Bruijn graph format and see if you can identify any contigs that could potentially be corrected to account for repeats or sequencing errors.
+        </div>
+    </div>        
+</div>
+
+### Gene Calling using PROKKA
+
+<!-- Pretty much need to add questions to all of these sections that the students can think about. -->
