@@ -112,7 +112,13 @@ We can keep this gedit window open in the background as we will return to it whe
 
 ### Writing a Basic Workflow
 
-Just to get ourselves familiar with how a very basic workflow is structured we're going to "write" our first workflow to move our sequence files from the base `lab_13` folder to the `input` folder.
+We can get started by examining our first basic workflow under the `src` folder:
+
+```console
+gedit move_sequences.py &
+```
+
+Which will open a tab in our existing gedit window with the following code:
 
 ```python
 import glob
@@ -124,7 +130,7 @@ from anadama2 import Workflow
 workflow = Workflow(version='1.0', description='Move sequence files workflow')
 args = workflow.parse_args()
 
-sequence_files = os.glob(os.path.join(args.input, '*.fastq.gz'))
+sequence_files = os.glob(os.path.join(args.input, '*'))
 
 workflow.add_task('mv [target[0]] [depends[0]]',
                   targets=args.output
@@ -133,7 +139,14 @@ workflow.add_task('mv [target[0]] [depends[0]]',
 workflow.go()                  
 ```
 
-We'll ignore the majority of the Python code here in the interest of time (and sanity) and concentrate on the AnADAMA2 portions of the code.
+We'll ignore the majority of the Python code here in the interest of time (and sanity) and concentrate on the portions of the code that create the behavior in AnADAMA2 we want.
+
+```python
+workflow = Workflow(version='1.0', description='A basic workflow to move '
+                    'sequences to a directory supplied by the user')
+```
+
+A workflow is created by providing a version number and a text description. Once this has been accomplished we are free to add tasks and perform various other operations available to us via AnADAMA2.
 
 ```python 
 workflow.add_task('mv [target[0]] [depends[0]]',
@@ -141,87 +154,67 @@ workflow.add_task('mv [target[0]] [depends[0]]',
                   depends=sequence_files[0])
 ```
 
+We can add a task to our newly created workflow by invoking the `add_task` functionality. `add_task` requires an action and can be provided with targets and dependencies. In this case we provide it with the Unix `mv` command to indicate we want to move a filed to another location. We specify the target destination to move the sequence to via the `targets` option and the file to move via the `depends` option. 
 
-    $ python exe_check.py
+In this example we are adding a single task but most workflows will contain more than one task which can be added by making another call to the `add_task` function
+and supplying the necessary options. 
 
-The contents of this script are as follows (line numbers are shown for
-clarity):
 ```python
- from anadama2 import Workflow
-
- workflow = Workflow(remove_options=["input","output"])
- workflow.do("ls /usr/bin/ | sort > [t:global_exe.txt]")
- workflow.do("ls $HOME/.local/bin/ | sort > [t:local_exe.txt]")
- workflow.do("join [d:global_exe.txt] [d:local_exe.txt] > [t:match_exe.txt]")
- workflow.go()
+workflow.go()
 ```
 
-The first line imports AnADAMA2 and the third line creates an instance
-of the Workflow class removing the command line options input and output
-as they are not used for this workflow. These two lines are required for
-every AnADAMA2 workflow. Lines 4-6 add tasks to the workflow and line 7
-tells AnADAMA2 to execute the tasks.
+The `workflow.go` function is used to start the workflow up once we've added all necessary tasks and/or creation of documents.
 
-### **Command Line Interface**
+### Running our First Workflow
+Before we go ahead and run this workflow let's take a look at the built-in options that all AnADAMA2 workflows receive by calling our workflow script with the `--help` option on the command-line:
 
-All AnADAMA2 workflows have a command line interface that includes a few
-default arguments. The default arguments include an input folder, an
-output folder, and the number of tasks to run in parallel. See the
-section \"Run an Intermediate Workflow\" for information on how to add
-custom options.
+```console
+vagrant@biobakery:~/Documents/labs/lab_13/src$ python move_sequences.py --help
+usage: move_sequences.py [-h] [--version] -o OUTPUT [-i INPUT]
+                         [--local-jobs JOBS] [--grid-jobs GRID_JOBS]
+                         [--grid GRID] [--grid-partition GRID_PARTITION]
+                         [--grid-benchmark {on,off}]
+                         [--grid-options GRID_OPTIONS]
+                         [--grid-environment GRID_ENVIRONMENT] [--dry-run]
+                         [--skip-nothing] [--quit-early]
+                         [--until-task UNTIL_TASK]
+                         [--exclude-task EXCLUDE_TASK] [--target TARGET]
+                         [--exclude-target EXCLUDE_TARGET]
+                         [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+```
 
-For a full list of options, run your workflow script with the
-\"\--help\" option.
+There is a lot to process here including a host of options to control execution in a grid computing environment and a couple options to control how far the worfklow should run (useful in a multi-step workflow)
 
-    $ python exe_check.py --help
-    usage: exe_check.py [options]
+The two key options that we will be using here are the `--input` and `--output` options to specify where our input sequence files are and the new directory to move our sequences files too. 
 
-    AnADAMA2 Workflow
-    Options:
-      --version             show program's version number and exit
-      -h, --help            show this help message and exit
-      -j JOBS, --local-jobs=JOBS
-                            The number of tasks to execute in parallel locally.
-      -t TARGET, --target=TARGET
-                            Only execute tasks that make these targets. Use this
-                            flag multiple times to build many targets. If the
-                            provided value includes ? or * or [, treat it as a
-                            pattern and build all targets that match.
-      -d, --dry-run         Print tasks to be run but don't execute their actions.
-      -l, --deploy          Create directories used by other options
-      -T EXCLUDE_TARGET, --exclude-target=EXCLUDE_TARGET
-                            Don't execute tasks that make these targets. Use this
-                            flag multiple times to exclude many targets. If the
-                            provided value includes ? or * or [, treat it as a
-                            pattern and exclude all targets that match.
-      -u UNTIL_TASK, --until-task=UNTIL_TASK
-                            Stop after running the named task. Can refer to the
-                            end task by task number or task name.
-      -e, --quit-early      If any tasks fail, stop all execution immediately. If
-                            not set, children of failed tasks are not executed but
-                            children of successful or skipped tasks are executed.
-                            The default is to keep running until all tasks that
-                            are available to execute have completed or failed.
-      -g GRID, --grid=GRID  Run gridable tasks on this grid type.
-      -U EXCLUDE_TASK, --exclude-task=EXCLUDE_TASK
-                            Don't execute these tasks. Use this flag multiple
-                            times to not execute multiple tasks.
-      -i INPUT, --input=INPUT
-                            Collect inputs from this directory.
-      -o OUTPUT, --output=OUTPUT
-                            Write output to this directory. By default the
-                            dependency database and log are written to this
-                            directory
-      -n, --skip-nothing    Skip no tasks, even if you could; run it all.
-      -J GRID_JOBS, --grid-jobs=GRID_JOBS
-                            The number of tasks to submit to the grid in parallel.
-                            The default setting is zero jobs will be run on the
-                            grid. By default, all jobs, including gridable jobs,
-                            will run locally.
-      -p GRID_PARTITION, --grid-partition=GRID_PARTITION
-                            Run gridable tasks on this partition.
+One option that we will single out is the `--dry-run` option. This option allows you to simulate the run of a workflow and will print out information indicating which actions will be run and the dependencies and targets consumed/produced during the specific step.
 
-### **Console Output**
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_13/src$ python move_sequences.py --input .. --output ../output/ --dry-run
+0 - Task0
+  Dependencies (1)
+  - /home/vagrant/Documents/labs/lab_13/p144C_R1.fastq.gz (Big File)
+  Targets (1)
+  - /home/vagrant/Documents/labs/lab_13/output (Directory)
+  Actions (1)
+  - mv /home/vagrant/Documents/labs/lab_13/output depends[0]] (command)
+------------------
+1 - Track pre-existing dependencies
+  Dependencies (0)
+  Targets (1)
+  - /home/vagrant/Documents/labs/lab_13/p144C_R1.fastq.gz (Big File)
+  Actions (1)
+  - noop (function)
+------------------
+Run Finished
+```
+
+<div class="alert alert-success" role="alert">
+  <b>Excercise #1</b>: Run our basic workflow to move the <code>p144C_R1.fastq.gz</code> sequence file to the <code>output</code> directory.
+</div>
+
+#### Console Output
 
 As tasks are run progress information is printed to the console. The
 default reporter prints at least five types of information to standard
@@ -235,22 +228,22 @@ output each time a status message for a task is recorded:
 3.  The status of the task is printed. Tasks can be skipped or started
     and they could complete or fail. There are a total of six different
     status messages.
-    a.  `Ready`: All dependencies for the task are available. The task
+    -  `Ready`: All dependencies for the task are available. The task
         is in the queue waiting for computational resources. For
         example, if there are 10 tasks that are ready and 10 jobs were
         specified to run at one time, all ready tasks will immediately
         start running. If there are more ready tasks then jobs
         specified, these tasks will wait until other jobs have finished
         running before starting.
-    b.  `Started`: The task started running locally or is about to
+    -  `Started`: The task started running locally or is about to
         submit a job to the grid depending on if a task is gridable and
         if the command line options specified a grid to be used.
-    c.  `Completed`: The task finished running without error.
-    d.  `Failed`: The task stopped running and an error was reported.
-    e.  `Skipped`: The task has been skipped. It does not need to be run
+    -  `Completed`: The task finished running without error.
+    -  `Failed`: The task stopped running and an error was reported.
+    -  `Skipped`: The task has been skipped. It does not need to be run
         because the targets of the task exist and have newer timestamps
         than the dependencies.
-    f.  `GridJob`: The task has been submitted to the grid. This status
+    -  `GridJob`: The task has been submitted to the grid. This status
         indicates incremental status messages are included at the end of
         the message about the status of the grid job.
 4.  The task number is included to identify the task associated with the
@@ -270,52 +263,17 @@ output each time a status message for a task is recorded:
     including job submission and states. This additional column in some
     cases can increase the total line length to more than 79 characters.
 
-Here is an example of the output from running a workflow of kneaddata
-and humann2 tasks on two input files with two local jobs running in
-parallel:
+Here is the console output from our basic workflow run:
 
-    (Dec 08 11:50:43) [0/4 -   0.00%] **Ready    ** Task 2: kneaddata
-    (Dec 08 11:50:43) [0/4 -   0.00%] **Started  ** Task 2: kneaddata
-    (Dec 08 11:50:43) [0/4 -   0.00%] **Ready    ** Task 0: kneaddata
-    (Dec 08 11:50:43) [0/4 -   0.00%] **Started  ** Task 0: kneaddata
-    (Dec 08 11:50:44) [1/4 -  25.00%] **Completed** Task 2: kneaddata
-    (Dec 08 11:50:44) [1/4 -  25.00%] **Ready    ** Task 5: humann2
-    (Dec 08 11:50:44) [1/4 -  25.00%] **Started  ** Task 5: humann2
-    (Dec 08 11:50:44) [2/4 -  50.00%] **Completed** Task 0: kneaddata
-    (Dec 08 11:50:44) [2/4 -  50.00%] **Ready    ** Task 4: humann2
-    (Dec 08 11:50:44) [2/4 -  50.00%] **Started  ** Task 4: humann2
-    (Dec 08 11:52:48) [3/4 -  75.00%] **Completed** Task 5: humann2
-    (Dec 08 11:52:49) [4/4 - 100.00%] **Completed** Task 4: humann2
-    Run Finished
+```console
+(Apr 01 03:14:00) [0/1 -   0.00%] **Ready    ** Task 0: mv
+(Apr 01 03:14:00) [0/1 -   0.00%] **Started  ** Task 0: mv
+(Apr 01 03:14:00) [1/1 - 100.00%] **Completed** Task 0: mv
+Run Finished
+```
 
-Here is an example of the output from running a kneaddata workflow on
-three input files using a grid and allowing two grid jobs at a time:
 
-    (Dec 08 14:33:07) [0/3 -   0.00%] **Ready    ** Task 4: kneaddata
-    (Dec 08 14:33:07) [0/3 -   0.00%] **Started  ** Task 4: kneaddata
-    (Dec 08 14:33:07) [0/3 -   0.00%] **Ready    ** Task 2: kneaddata
-    (Dec 08 14:33:07) [0/3 -   0.00%] **Started  ** Task 2: kneaddata
-    (Dec 08 14:33:07) [0/3 -   0.00%] **Ready    ** Task 0: kneaddata
-    (Dec 08 14:33:25) [0/3 -   0.00%] **GridJob  ** Task 4: kneaddata <Grid JobId 76918649 : Submitted>
-    (Dec 08 14:33:34) [0/3 -   0.00%] **GridJob  ** Task 2: kneaddata <Grid JobId 76918676 : Submitted>
-    (Dec 08 14:34:25) [0/3 -   0.00%] **GridJob  ** Task 4: kneaddata <Grid JobId 76918649 : PENDING>
-    (Dec 08 14:47:26) [0/3 -   0.00%] **GridJob  ** Task 4: kneaddata <Grid JobId 76918649 : PENDING>
-    (Dec 08 14:47:26) [0/3 -   0.00%] **GridJob  ** Task 4: kneaddata <Grid JobId 76918649 : Getting benchmarking data>
-    (Dec 08 14:47:35) [0/3 -   0.00%] **GridJob  ** Task 2: kneaddata <Grid JobId 76918676 : PENDING>
-    (Dec 08 14:47:35) [0/3 -   0.00%] **GridJob  ** Task 2: kneaddata <Grid JobId 76918676 : Getting benchmarking data>
-    (Dec 08 14:49:35) [0/3 -   0.00%] **GridJob  ** Task 4: kneaddata <Grid JobId 76918649 : Final status of COMPLETED>
-    (Dec 08 14:49:35) [0/3 -   0.00%] **GridJob  ** Task 2: kneaddata <Grid JobId 76918676 : Final status of COMPLETED>
-    (Dec 08 14:49:35) [0/3 -   0.00%] **Started  ** Task 0: kneaddata
-    (Dec 08 14:49:35) [1/3 -  33.33%] **Completed** Task 4: kneaddata
-    (Dec 08 14:49:35) [2/3 -  66.67%] **Completed** Task 2: kneaddata
-    (Dec 08 14:49:44) [2/3 -  66.67%] **GridJob  ** Task 0: kneaddata <Grid JobId 76922265 : Submitted>
-    (Dec 08 14:50:44) [2/3 -  66.67%] **GridJob  ** Task 0: kneaddata <Grid JobId 76922265 : Waiting>
-    (Dec 08 14:50:44) [2/3 -  66.67%] **GridJob  ** Task 0: kneaddata <Grid JobId 76922265 : Getting benchmarking data>
-    (Dec 08 14:54:46) [2/3 -  66.67%] **GridJob  ** Task 0: kneaddata <Grid JobId 76922265 : Final status of COMPLETED>
-    (Dec 08 14:54:46) [3/3 - 100.00%] **Completed** Task 0: kneaddata
-    Run Finished
-
-### **Logging Output**
+#### Logging Output
 
 A default setting for workflows is to thoroughly log execution
 information to a text file named `anadama.log` in the current directory.
@@ -326,45 +284,33 @@ traceback information for all exceptions. With each workflow executed
 the log appends. It will include information on all runs for a workflow.
 Below is an example of what to expect from the `anadama.log`:
 
-    2016-10-28 09:07:38,613   anadama2.runners    _run_task_locally   DEBUG: Completed executing task 3 action 0
-    2016-10-28 09:07:38,613   LoggerReporter  task_completed  INFO: task 3, `Task(name="sed 's|.*Address: \\(.*[0-9]\\)<.*|\\1|' my_ip.txt > ip.txt", actions=[<function actually_sh at 0x7f32ff082410>], depends=[<anadama2.tracked.TrackedFile object at 0x7f32ff07dfd0>, <anadama2.tracked.TrackedVariable object at 0x7f32ff07df90>, <anadama2.tracked.TrackedExecutable object at 0x7f32ff092050>], targets=[<anadama2.tracked.TrackedFile object at 0x7f32ff092190>], task_no=3)' completed successfully.
-    2016-10-28 09:07:38,613   LoggerReporter  task_started    INFO: task 5, `whois $(cat ip.txt) > whois.txt' started. 2 parents: [3, 4].  0 children: [].
-    2016-10-28 09:07:38,613   anadama2.runners    _run_task_locally   DEBUG: Executing task 5 action 0
-    2016-10-28 09:07:38,613   anadama2.helpers    actually_sh INFO: Executing with shell: whois $(cat ip.txt) > whois.txt
-    2016-10-28 09:07:38,875   anadama2.helpers    actually_sh INFO: Execution complete. Stdout: 
-    Stderr: 
-    2016-10-28 09:07:38,875   anadama2.runners    _run_task_locally   DEBUG: Completed executing task 5 action 0
-    2016-10-28 09:07:38,875   LoggerReporter  task_completed  INFO: task 5, `Task(name='whois $(cat ip.txt) > whois.txt', actions=[<function actually_sh at 0x7f32ff082488>], depends=[<anadama2.tracked.TrackedFile object at 0x7f32ff092190>, <anadama2.tracked.TrackedVariable object at 0x7f32ff07df10>, <anadama2.tracked.TrackedExecutable object at 0x7f32ff0921d0>], targets=[<anadama2.tracked.TrackedFile object at 0x7f32ff092390>], task_no=5)' completed successfully.
-    2016-10-28 09:07:38,875   LoggerReporter  finished    INFO: AnADAMA run finished.
+```console
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: jobs = 1
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: dry_run = False
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid_environment = None
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: exclude_target = None
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: log_level = INFO
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: until_task = None
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: quit_early = False
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid_benchmark = off
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid_options = None
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid = None
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid_partition =
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: input = ..
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: output = ../output/
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: skip_nothing = False
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: grid_jobs = 0
+2018-04-01 03:14:00,215	LoggerReporter	started	INFO: target = None
+2018-04-01 03:14:00,225	LoggerReporter	log_event	INFO: task 0, mv : ready and waiting for resources
+2018-04-01 03:14:00,226	LoggerReporter	log_event	INFO: task 0, mv : starting to run
+2018-04-01 03:14:00,227	LoggerReporter	task_command	INFO: Executing with shell:  mv /home/vagrant/Documents/labs/lab_13/p144C_R1.fastq.gz /home/vagrant/Documents/labs/lab_13/output
+2018-04-01 03:14:00,229	anadama2.helpers	actually_sh	INFO: Execution complete. Stdout:
+Stderr:
+2018-04-01 03:14:00,230	LoggerReporter	log_event	INFO: task 0, mv : completed successfully
+2018-04-01 03:14:00,230	LoggerReporter	finished	INFO: AnADAMA run finished.
+```
 
-### **Run with Specific Targets**
-
-Tasks in each workflow can have one or more targets. A target is an
-item, usually a file, that is created or modified by a task. With
-AnADAMA2, you can select specific targets for each of your runs. This is
-useful in that it allows you to only run a portion of your workflow.
-
-Targets for each run are selected through the command line interface.
-The options that allow you to specify a target or set of targets can be
-shown by running your workflow with the help option. See the prior
-section for the full list.
-
-Running the example workflow with the target option would only create
-the \"global\_exe.txt\" file. Targets that do not include a full path
-are expected to be located relative to your current working directory.
-If a target is in a different folder, provide the full path to the
-target.
-
-    $ python check_exe.py --target global_exe.txt
-
-Running the example workflow with the expanded target option would only
-create the \"global\_exe.txt\" and the \"local\_exe.txt\" files. For
-targets with patterns, place the target in quotes so the pattern is not
-evaluated by the shell.
-
-    $ python check_exe.py --target "*l_exe.txt"
-
-### **Output Files**
+#### Output Files
 
 AnADAMA2 will always place at least two items in the output folder. The
 output folder by default is the directory of your workflow script. If in
@@ -374,66 +320,9 @@ working directory. All workflows without output folders will share the
 same database. Currently it is not possible to run two workflows at once
 that share the same database.
 
-#### **Database**
 
-AnADAMA2 stores a target and dependencies tracking database in the
-output folder for each run. This includes information on all of the
-items AnADAMA2 tracks from the workflow. You shouldn\'t need to look at
-this file, but you can remove it to erase all history of past runs.
+#### Running Tasks on Multiple Files
 
-#### **Log**
-
-The log file will contain information on all of the tasks run including
-standard out and standard error from every command line task. It will
-also include the values of all workflow arguments.
-
-### **Other Basic Workflow Examples**
-
-Example AnADAMA2 workflow scripts can be found in the examples folder of
-the source download. Three of these example scripts are described below.
-
-The script `simple.py` downloads a file and then runs two linux commands
-sed and whois. This script shows how to specify dependencies and targets
-in the commands directly.
-
-To run this example simply execute the script directly:
-
-    $ python simple.py
-
-The script `has_a_function.py` shows how to add a task which is a
-function to a workflow. This script will download a file, decompress the
-file, and then remove the trailing tabs in the file.
-
-To run this example simply execute the script directly:
-
-    $ python has_a_function.py
-
-The script `kvcontainer.py` shows how to use a container as a
-dependency. This container allows you to track a set of strings without
-having them overlap with other strings of the same name in another
-workflow.
-
-To run this example simply execute the script directly:
-
-    $ python kvcontainer.py
-
-### **Jupyter Notebook Examples**
-
-Examples of running AnADAMA2 in Jupyter Notebooks are included in the
-examples folder. [Jupyter nbviewer](http://nbviewer.jupyter.org/) can be
-used to render the notebooks online.
-
-The first notebook shows a simple example on how to download files. To
-see the notebook rendered with nbviewer visit
-[AnADAMA2\_download\_files\_example.ipynb](http://nbviewer.jupyter.org/urls/bitbucket.org/biobakery/anadama2/raw/tip/examples/jupyter_notebooks/AnADAMA2_download_files_example.ipynb).
-
-The second notebook illustrates a more complex example of processing
-shotgun sequencing data. This example requires additional dependencies
-be installed prior to running. It also requires input files and database
-files to be downloaded. To see the notebook rendered with nbviewer visit
-[AnADAMA2\_shotgun\_workflow\_example.ipynb](http://nbviewer.jupyter.org/urls/bitbucket.org/biobakery/anadama2/raw/tip/examples/jupyter_notebooks/AnADAMA2_shotgun_workflow_example.ipynb).
-
-------------------------------------------------------------------------
 
 **Intermediate Usage**
 ----------------------

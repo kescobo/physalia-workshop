@@ -3,6 +3,8 @@
 
 @import "variables";
 @import "bootstrap/scss/bootstrap";
+$fa-font-path: "fonts/font-awesome/";
+@import 'font-awesome';
 
 body {
   background-color: #E5E5E5;
@@ -60,4 +62,18 @@ a.toc-link {
 #workshop-title {
   color: white;
   font-size: 135%;
+}
+
+.alert .alert-icon-col {
+  min-width: 25px;
+  max-width: 25px;
+}
+
+.alert-link {
+  /* i find 700 to bold */
+  font-weight: 600;
+}
+
+body {
+  padding: 10px;
 }
