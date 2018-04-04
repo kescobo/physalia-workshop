@@ -75,16 +75,16 @@ The input files required for the script are the following:
 For this tutorial, our proteins of interest are a small set of TonB genes from
 Proteobacteria. TonB is a siderophore import protein found in the outer membrane
 of gram negative bacteria, and the reference proteins are subsampled from the
-[integrated microbial genomes (IMG) database](https://img.jgi.doe.gov/).
+[integrated microbial genomes (IMG) database](https://img.jgi.doe.gov/). Both are located in the `input` folder contained in the tutorial tarball `data/lab_8_examples.tgz`.
 
-- [tonB.faa](#)
-- [ref_prots.faa](#)
+- tonB.faa
+- ref_prots.faa
 
 We're trying to identify tonB genes in set of short DNA reads from metagenomic
 sequencing. The data we'll use for the tutorial was synthetically generated to
 contain 1000 reads from tonB genes, and 10000 reads from other proteins.
 
-- [shortbred_demo_reads.fasta](#)
+- shortbred_demo_reads.fasta
 
 #### 2.2 Naive search
 
