@@ -5,7 +5,7 @@ lab_num: 2
 permalink: /labs/2_unix
 is_lab: true
 custom_css: tocbot
-custom_js: 
+custom_js:
     - tocbot.min
     - labs
 ---
@@ -14,23 +14,25 @@ custom_js:
 
 **The goal of this lab is to become familiar operating in the Unix command-line interface.**
 
-Most bioinformatic tools are written for use in the Unix environment so becoming comfortable with 
-navigating the command-line is a useful skill to have and will be necessary to complete the majority 
+Most bioinformatic tools are written for use in the Unix environment so becoming comfortable with
+navigating the command-line is a useful skill to have and will be necessary to complete the majority
 of upcoming labs.
 
 ### Navigating the Directory Structure
 
-The Unix directory structure can be visualized as a tree. Each level of the tree indicates a series 
+The Unix directory structure can be visualized as a tree. Each level of the tree indicates a series
 of folders or files which can have zero or many nested child folders/files.
 
 <img class="mx-auto d-block" src="{{ "/assets/img/labs/lab_2_unix_dir_tree.png" | prepend: site.baseurl }}" alt="Unix Directory Tree Structure"/>
 
+<!-- Would be nice to make this image look like what's on the instace rather than on your system -->
+
 #### Getting the Working Directory
-It is important to know where we are when navigating the Unix directory structure. The current directory 
+It is important to know where we are when navigating the Unix directory structure. The current directory
 you operate out of is called the **Working Directory** and we can print this out by using the `pwd` command:
 
 ```console
-vagrant@biobakery:~$ pwd 
+vagrant@biobakery:~$ pwd
 /home/vagrant
 ```
 
@@ -39,8 +41,16 @@ Navigation is primarly handled by the **C**hange **D**irectory command `cd`:
 
 ```console
 vagrant@biobakery:~$ cd Documents/
-vagrant@biobakery:~/Documents$ pwd 
+vagrant@biobakery:~/Documents$ pwd
 /home/vagrant/Documents
+```
+
+Since `Documents/` was a subfolder of the directory we were in, a _relative path_
+could be used. We can also get to the `Documents/` folder from anywhere using
+the _absolute path_, starting with the root, eg:
+
+```console
+vagrant@biobakery:~/Documents$ cd /home/vagrant/Documents
 ```
 
 It is also possible to traverse multiple directories in one `cd` command:
@@ -54,14 +64,14 @@ vagrant@biobakery:/usr/local/etc$ pwd
 **Note**: You may have noticed that a portion of the terminal text updates while we are moving around directories (`vagrant@biobakery`) --
 this is the terminal prompt and displays useful information like our current working directory.
 
-We can navigate backwards up the Unix directory tree by using using the special characters `..` in 
+We can navigate backwards up the Unix directory tree by using using the special characters `..` in
 conjunction with `cd`:
 
 ```console
 vagrant@biobakery:/usr/local/etc$ pwd
 /usr/local/etc
 vagrant@biobakery:/usr/local/etc$ cd ..
-vagrant@biobakery:/usr/local$ pwd 
+vagrant@biobakery:/usr/local$ pwd
 /usr/local
 ```
 
@@ -70,7 +80,7 @@ Note that this can be chained multiple times to navigate backwards several level
 ```console
 vagrant@biobakery:/usr/local$ cd etc/
 vagrant@biobakery:/usr/local/etc$ cd ../..
-vagrant@biobakery:/usr$ pwd 
+vagrant@biobakery:/usr$ pwd
 /usr
 ```
 
@@ -97,8 +107,10 @@ vagrant@biobakery:~$ pwd
 
 
 ### Listing Files
-Now that we know how to navigate around the Unix file structure we will want to see what files/directories are 
+Now that we know how to navigate around the Unix file structure we will want to see what files/directories are
 present in our working directory. This is accomplished using the `ls` command:
+
+<!-- insert another image of the folder structure here, highlighting the home directory -->
 
 ```console
 vagrant@biobakery:~$ cd
@@ -108,7 +120,7 @@ vagrant@biobakery:~$ ls
 arepa  Desktop  Documents  Downloads  Music  phylophlan  Pictures  Public  Templates  Videos
 ```
 
-We can see that there are multiple directories under the `/home/vagrant/` location but not much 
+We can see that there are multiple directories under the `/home/vagrant/` location but not much
 more information is returned. This can be fixed by passing options to the `ls` command that transform
 what output is produced
 
@@ -117,7 +129,7 @@ We can use the `-l` option to request a long list of the contents of a directory
 ```console
 vagrant@biobakery:~$ pwd
 /home/vagrant
-vagrant@biobakery:~$ ls -l 
+vagrant@biobakery:~$ ls -l
 total 40
 drwxr-xr-x 14 root    root    4096 Aug 31  2017 arepa
 drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Desktop
@@ -131,10 +143,10 @@ drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Templates
 drwxr-xr-x  2 vagrant vagrant 4096 Aug 31  2017 Videos
 ```
 
-Several new pieces of information are now provided including file/directory permissions, owner, 
+Several new pieces of information are now provided including file/directory permissions, owner,
 size and date last updated.
 
-The `ls` command does not restrict us to listing files only in our working directory; the location to any file or directory can 
+The `ls` command does not restrict us to listing files only in our working directory; the location to any file or directory can
 be provided with the same results:
 
 ```console
@@ -174,8 +186,8 @@ data
 ```
 
 ### Downloading and Extracting Compressed Files
-Before moving on we'll want to download some example files that we will play with to our cloud machine. The command-line has no 
-"Save As" prompt as you may be used to when working with a graphical interface but we can use the `curl` command to 
+Before moving on we'll want to download some example files that we will play with to our cloud machine. The command-line has no
+"Save As" prompt as you may be used to when working with a graphical interface but we can use the `curl` command to
 grab files from a remote location.
 
 ```console
@@ -256,7 +268,7 @@ Once invoked the `less` command takes over the entirety of our terminal window a
 
 ### A Quick Tangent: The Wildcard Character
 
-Before we proceed it is useful to note that the Unix command-line has robust support for pattern matching in almost all of commands using the 
+Before we proceed it is useful to note that the Unix command-line has robust support for pattern matching in almost all of commands using the
 wildcard character `*`.
 
 An example would be using the wildcard character to list all fasta files in a directory:
@@ -271,7 +283,7 @@ vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l *.fasta
 -rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_E.fasta
 ```
 
-We can insert the wildcard character into to make many combinations of partial matches to pass along to Unix commands. Let's list all 
+We can insert the wildcard character into to make many combinations of partial matches to pass along to Unix commands. Let's list all
 files that begin wit hthe word `example`:
 
 ```console
@@ -304,7 +316,7 @@ The `mv` command can also used to rename files/directories by providing a new fi
 
 ```console
 vagrant@biobakery:~/Documents/labs/lab_2/data$ mv sequences_A.fasta new_sequencesA.fasta
-vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l 
+vagrant@biobakery:~/Documents/labs/lab_2/data$ ls -l
 total 0
 drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 example_dirB
 drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 example_dirA
@@ -314,10 +326,10 @@ drwxr-xr-x  2 vagrant  staff   64 Mar 26 18:07 example_dirA
 -rw-r--r--  1 vagrant  staff   0 Mar 26 17:54 sequences_E.fasta
 ```
 
-Deleting files is done using the `rm` command. 
+Deleting files is done using the `rm` command.
 
 **Caution should be exercised when deleting files on the command-line as no
-prompts or warnings will be given to confirm that files are going to be deleted.** 
+prompts or warnings will be given to confirm that files are going to be deleted.**
 
 Let's try deleting the `new_sequences.fasta` file we just renamed:
 
@@ -325,7 +337,7 @@ Let's try deleting the `new_sequences.fasta` file we just renamed:
 vagrant@biobakery:~/Documents/labs/lab_2/data$ rm new_sequencesA.fasta
 ```
 
-When deleting directories we must supply `rm` with the additional `-rf` arguments to ensure that any files found under 
+When deleting directories we must supply `rm` with the additional `-rf` arguments to ensure that any files found under
 the specified directory are also deleted. Failure to provide the `-rf` argument will result in `rm` returning an error:
 
 ```console
@@ -343,7 +355,7 @@ vagrant@biobakery:~/Documents/labs/lab_2/data$ rm -rf example_dirA/
 
 ### Full Text Search With `grep`
 
-Searching the contents of a text file is a useful operation made very easy through the use of the 
+Searching the contents of a text file is a useful operation made very easy through the use of the
 `grep` command:
 
 ```console
@@ -383,7 +395,7 @@ sequences_B.fasta
 ```
 
 <div class="alert alert-success" role="alert">
-  <b>Excercise #5</b>: Search all FASTA files for the nucleotide sequence <code>TACTACTCCGACT</code> in the 
+  <b>Excercise #5</b>: Search all FASTA files for the nucleotide sequence <code>TACTACTCCGACT</code> in the
   <code>examples_dirB</code> directory.
 </div>
 
@@ -423,7 +435,7 @@ DESCRIPTION
 ...
 ```
 
-Manuals for commands are useful to provide the myriad number of options that are availble. These man pages can be navigated using the 
+Manuals for commands are useful to provide the myriad number of options that are availble. These man pages can be navigated using the
 same keys used with `less`: **Up**, **Down**, **Page Up**, **Page Down**, and **Spacebar** to navigate and **q** to exit.
 
 ### Misc. Tips and Tricks
@@ -454,14 +466,17 @@ vagrant@biobakery:~$ history
 
 **Note: Closing the terminal window or shutting down/restarting your computer will wipe the command history.**
 
-Also worth noting is that the **Up** and **Down** arrow keys can be used to cycle through the history and bring up any commands previously ran:
+Also worth noting is that the **Up** and **Down** arrow keys can be used to cycle through the history and bring up any commands previously ran. `history`
+can be combined with `grep` to search for previous uses of a command:
+
+<!-- add example eg `history | grep mkdir` -->
 
 #### Auto-completing Commands
 
-The **Tab** key can be used to bring up a list of commands or files/directories in the working directory 
+The **Tab** key can be used to bring up a list of commands or files/directories in the working directory
 that match whatever we are typing into the terminal.
 
-An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key:
+An example can be seen below when typing `mk` into the termianl and hitting the **Tab** key: <!-- Don't you have to hit tab twice here? -->
 
 ```console
 vagrant@biobakery:~$ mk
@@ -473,10 +488,12 @@ mkfifo            mkfs.bfs          mkfs.ext3         mkfs.minix        mkfs.xfs
 
 A list of all commands that start with the characters `mk` are returned.
 
-Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory. 
+Similarly we can use auto-complete/tab-complete to bring up a list of files in the working directory.
 Here we are using the `ls` command and the **Tab** key to bring up all files that begin with the characters `sequences_` under the `/home/vagrant/Documents/labs/lab_2/data/example_dirB/sequences/` directory.
 
 ```console
 vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB/sequences$ ls sequences_
 sequences_X.fasta  sequences_Y.fasta  sequences_Z.fasta
 ```
+
+If only one thing matches, the terminal will auto-complete the command. For example, type `ls sequences_X<TAB>`. Partial completion works as well. Type `ls seq<TAB>`.
