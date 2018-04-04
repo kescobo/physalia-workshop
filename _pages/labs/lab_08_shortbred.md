@@ -2,6 +2,7 @@
 layout: default
 title: "Lab #8 - Introduction to ShortBRED"
 permalink: /labs/08_shortbred
+is_lab: true
 lab_num: 8
 custom_css: tocbot
 custom_js:

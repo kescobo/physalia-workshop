@@ -195,6 +195,8 @@ total 12144
     </div>        
 </div>
 
+Take a look at the metaQUAST HTML report for the MetaSPAdes contigs.
+
 We can concatenate our two assembly reports using the Unix `paste` and `cut` commands like so:
 
 ```console
