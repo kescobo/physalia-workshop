@@ -6,12 +6,6 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
-plugins:
-  - jekyll-font-awesome-sass
-
-font-awesome:
-  assets: true
-
 sass:
     load_paths:
         - _sass

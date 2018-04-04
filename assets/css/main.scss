@@ -3,8 +3,7 @@
 
 @import "variables";
 @import "bootstrap/scss/bootstrap";
-$fa-font-path: "fonts/font-awesome/";
-@import 'font-awesome';
+@import "font-awesome/scss/font-awesome.scss";
 
 body {
   background-color: #E5E5E5;
