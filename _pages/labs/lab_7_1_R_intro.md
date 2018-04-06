@@ -1,8 +1,8 @@
 ---
 layout: default
 title: "Lab #7.1 - Introduction to R"
-lab_num: 4
-permalink: /labs/7.1_Introduction_to_R
+lab_num: 7
+permalink: /labs/7_1_Introduction_to_R
 is_lab: true
 custom_css: tocbot
 custom_js: 

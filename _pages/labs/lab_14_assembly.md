@@ -211,7 +211,7 @@ vagrant@biobakery:~/Documents/labs/lab_14/assembly/qc$ less merged_report.txt
 
 Take a look at the merged assembly report in `less`. Is one assembly "better" than the other?
 
-### Visualizing Assembly with Bandage
+### Visualizing Contigs with Bandage
 
 Bandage allows us to examine the de Bruijn graphs created by several of the more popular assemblers (Velvet, SPAdes, MEGAHIT, etc.) and visualizes the paths that were taken in creating the contigs that were produced. We can use this information to again get an idea of how well each assembler my have performed but even more exciting is that by visualizing the paths used in constructing the contigs we can potentially identify loops and dead-ends which could be candidates to be fixed.
 
@@ -235,6 +235,8 @@ Use the *File* -> *Open* dialog menu to find our contig graph file that we just 
 
 <img src="{{ "/assets/img/labs/lab_14_bandage_megahit.png" | prepend: site.baseurl }}" alt="Bandage Contig Visualization"/>
 
+<!-- Likely want to go over some of the contigs that look dicey and discuss what we could do to fix them up -->
+
 <div class="alert alert-success" role="alert">
     <div class="row">
         <div class="col-1 alert-icon-col">
@@ -246,6 +248,110 @@ Use the *File* -> *Open* dialog menu to find our contig graph file that we just 
     </div>        
 </div>
 
-### Gene Calling using PROKKA
+### Annotating Contigs using PROKKA
+
+PROKKA is a pipeline that goes through the complete process of annotating assembled contigs. Recall the following image from the lecture describing the steps in PROKKA and all its intermediate outputs:
+
+<img src="{{ "/assets/img/labs/lab_14_prokka_overview.png" | prepend: site.baseurl }}" alt="QUAST HTML Report"/>
+
+Let's get started with PROKKA to annotate our contigs. We can begin by looking at all the options that PROKKA presents us with (as usual):
+
+```console
+vagrant@biobakery:~/Downloads$ prokka
+Name:
+  Prokka 1.13 by Torsten Seemann <torsten.seemann@gmail.com>
+Synopsis:
+  rapid bacterial genome annotation
+Usage:
+  prokka [options] <contigs.fasta>
+General:
+  --help            This help
+  --version         Print version and exit
+  --docs            Show full manual/documentation
+  --citation        Print citation for referencing Prokka
+  --quiet           No screen output (default OFF)
+  --debug           Debug mode: keep all temporary files (default OFF)
+Setup:
+  --listdb          List all configured databases
+  --setupdb         Index all installed databases
+  --cleandb         Remove all database indices
+  --depends         List all software dependencies
+  Outputs:
+  --outdir [X]      Output folder [auto] (default '')
+  --force           Force overwriting existing output folder (default OFF)
+  --prefix [X]      Filename output prefix [auto] (default '')
+  --addgenes        Add 'gene' features for each 'CDS' feature (default OFF)
+  --addmrna         Add 'mRNA' features for each 'CDS' feature (default OFF)
+  --locustag [X]    Locus tag prefix [auto] (default '')
+  --increment [N]   Locus tag counter increment (default '1')
+  --gffver [N]      GFF version (default '3')
+  --compliant       Force Genbank/ENA/DDJB compliance: --addgenes --mincontiglen 200 --centre XXX (default OFF)
+  --centre [X]      Sequencing centre ID. (default '')
+  --accver [N]      Version to put in Genbank file (default '1')
+ ...
+ Annotations:
+  --kingdom [X]     Annotation mode: Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')
+  --gcode [N]       Genetic code / Translation table (set if --kingdom is set) (default '0')
+  --gram [X]        Gram: -/neg +/pos (default '')
+  --usegenus        Use genus-specific BLAST databases (needs --genus) (default OFF)
+  --proteins [X]    FASTA or GBK file to use as 1st priority (default '')
+  --hmms [X]        Trusted HMM to first annotate from (default '')
+  --metagenome      Improve gene predictions for highly fragmented genomes (default OFF)
+  --rawproduct      Do not clean up /product annotation (default OFF)
+  --cdsrnaolap      Allow [tr]RNA to overlap CDS (default OFF)
+```
+
+For our annotation run we'll want to make use of the `--outdir` option (save our annotations to a directory called `prokka`) and the `--prefix` option to prefix all our output files with the prefix `metahit_`. 
+
+Also take note of some of the annotation options availble. We'll want to make use of the `--metagenome` option since we are dealing with metagenomic data.
+
+#### PROKKA Setup
+Let's make a separate space to work in by creating an `annotation` folder under our `lab_14` folder:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/assembly/$ cd ../
+vagrant@biobakery:~/Documents/labs/lab_14$ mkdir annotation
+vagrant@biobakery:~/Documents/labs/lab_14$ cd annotation/
+```
+
+Since PROKKA is an amalagation of several pieces of analysis software we need to run the `--setupdb` option to prepare all the databases used 
+by each analysis piece:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/ prokka --setupdb
+[15:12:03] Appending to PATH: /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin
+[15:12:03] Cleaning databases in /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin/../db
+[15:12:03] Deleting unwanted file: /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin/../db/kingdom/Archaea/sprot.phd
+[15:12:03] Deleting unwanted file: /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin/../db/kingdom/Archaea/sprot.phi
+[15:12:03] Deleting unwanted file: /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin/../db/kingdom/Archaea/sprot.phr
+...
+```
+
+Now running the `--listdb` option we can see the databases that were prepared and available:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_14/$ prokka --listdb
+[15:14:09] Looking for databases in: /home/vagrant/.linuxbrew/Cellar/prokka/1.13/bin/../db
+[15:14:09] * Kingdoms: Archaea Bacteria Mitochondria Viruses
+[15:14:09] * Genera: Enterococcus Escherichia Staphylococcus
+[15:14:09] * HMMs: HAMAP
+[15:14:09] * CMs: Bacteria Viruses
+```
+
+#### Running PROKKA
+Let's get a PROKKA annotation run going. Remember to make use of the `--outdir`, <br/>`--metagenome`, and `--prefix` options when annotating our metagenomic contigs.
+
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-exclamation-triangle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Excercise #6</b>: Start a PROKKA annotation run with our assembled contigs. Use the contigs file at: <code>/home/vagrant/Documents/labs/lab_14/assembly/combined/final.contigs.fa</code>
+        </div>
+    </div>        
+</div>
+
+### Genomic Binning
 
 <!-- Pretty much need to add questions to all of these sections that the students can think about. -->
