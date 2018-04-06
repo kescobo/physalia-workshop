@@ -12,7 +12,7 @@ custom_js:
 
 # Introduction to R
 
-R is a language and environment for statistical computing and graphics. R and its libraries/packages implement a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, and is highly extensible. R is an environment within which statistical techniques are implemented for data analysis and graphics and is great for creating publication-quality plots.
+R is a language and environment for statistical computing and graphics. R and its libraries/packages implement a wide variety of statistical (linear and nonlinear modelling, classical statistical tests, time-series analysis, classification, clustering, …) and graphical techniques, and is highly extensible. 
 
 * Vast capabilities, wide range of statistical and graphical techniques
 * Excellent community support: mailing list, blogs, tutorials
@@ -22,7 +22,7 @@ R is a language and environment for statistical computing and graphics. R and it
 
 1. Option: Use **RStudio** (free and open-source integrated development environment for R)
 
-* Star the RStudio program
+* Start the RStudio program
 * Open a new document and save the file.
 
 <img src="{{ "/assets/img/labs/lab_7_1_Rstudio.png" | prepend: site.baseurl }}" alt="RStudio"/>
@@ -280,7 +280,7 @@ table(baby.names$Sex)
 Do you notice any discrepency in the output?
 
 ```R
-baby.names$Sex = table(gsub("M$", "Male", baby.names$Sex))
+baby.names$Sex = gsub("M$", "Male", baby.names$Sex)
 ```
 
 Why do we need the ```$``` sign? What happens if we omit it? 
@@ -375,8 +375,22 @@ Change the layout of the plot:
     * http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
 
 
+### Save plot as a pdf 
 
-#### Boxplots
+```R
+pdf(file="boxplot.pdf")
+
+boxplot(Name.length~Sex,data=baby.names, col=c("cornflowerblue", "deeppink3"))
+
+dev.off()
+```
+
+
+What about other file formats?
+
+
+
+#### Histograms
 
 How many names were recorded for each year?
 
@@ -388,3 +402,11 @@ hist(baby.names$Year)
 ```
 
 Take a look at ```?hist``` and change the layout of the plot.
+
+<!---
+```R
+pdf(file="histogram.pdf", height=5, width=7)
+hist(baby.names$Year, main="Histogram", col="darkseagreen1", xlab="Years")
+dev.off()
+```
+--->
