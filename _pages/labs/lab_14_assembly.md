@@ -347,7 +347,14 @@ Let's get a PROKKA annotation run going. Remember to make use of the `--outdir`,
             <span class="fa fa-exclamation-triangle fa-fw"></span>
         </div>
         <div class="col">
-            <b>Excercise #6</b>: Start a PROKKA annotation run with our assembled contigs. Use the contigs file at: <code>/home/vagrant/Documents/labs/lab_14/assembly/combined/final.contigs.fa</code>
+            <b>Excercise #6</b>: Start a PROKKA annotation run with our assembled contigs. Use the contigs file at: <br/><br/><code>/home/vagrant/Documents/labs/lab_14/assembly/combined/final.contigs.fa</code>
+            <br/><br/>
+            <b>Questions</b>
+            <ul>
+                <li>Take a look at the megahit.txt file, how well did we manage to annotate our contigs?</li>
+                <li>Take a look at the megahit.faa file, are there any trends in the genes predicted?</li>
+                <li>For the megahit.faa file, how many genes are hypothetical proteins?</li>
+            </ul>
         </div>
     </div>        
 </div>
