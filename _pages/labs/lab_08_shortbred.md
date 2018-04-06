@@ -15,11 +15,11 @@ custom_js:
 Representative Extract Dataset) is a pipeline to take a set of protein
 sequences, cluster them into families, build consensus sequences to
 represent the families, and then reduce these consensus sequences to a
-set of unique identifying strings ("markers"). The pipeline then
+set of unique identifying peptide sequences ("markers"). The pipeline then
 searches for these markers in metagenomic data and determines the
 presence and abundance of the protein families of interest.
 
-For additional information, please refer to the manuscript: [Kaminski J,
+For additional information, please refer to the ShortBRED manuscript: [Kaminski J,
 Gibson MK, Franzosa EA, Segata N, Dantas G, Huttenhower
 C.High-specificity targeted functional profiling in microbial
 communities with ShortBRED. PLoS Comput Biol. 2015 Dec
@@ -43,10 +43,7 @@ The following figure shows the workflow of ShortBRED.
 ShortBRED can be installed with Homebrew or run from a Docker image.
 Please note, if you are using bioBakery (Vagrant VM or cloud) you do not
 need to install ShortBRED because the tool and its dependencies are
-already installed. However, you will need to install the dependency
-USEARCH which requires a license. Follow the commands in the
-instructions to install [bioBakery dependencies that require
-licences](https://bitbucket.org/biobakery/biobakery/wiki/biobakery_basic#rst-header-install-biobakery-dependencies).
+already installed.
 
 Install with Homebrew: `$ brew install biobakery/biobakery/shortbred`
 
@@ -56,38 +53,40 @@ If you would like to install from source, refer to the [ShortBRED user
 manual](http://bitbucket.org/biobakery/shortbred) for the
 pre-requisites/dependencies and installation instructions.
 
-### 2. ShortBRED-Identify
+#### 1.1 Input Files
 
-ShortBRED-Identify clusters the input protein sequences into families,
-builds consensus sequences, and then identifies regions of overlap among
-the consensus sequences and between the consensus sequences and a set of
-reference proteins. This information is used to construct a set of
-representative markers for the families.
-
-<img src="{{ "/assets/img/labs/lab_8_identify.png" | prepend: site.baseurl }}" alt=""/>
-
-#### 2.1 Input Files
-
-The input files required for the script are the following:
+The input files required for ShortBRED are the following:
 
 1. Proteins of interest - amino acid sequences of the proteins you are looking for.
-2. Reference proteins - a set of amino acid sequnces that might be present in your sample.
+2. Reference proteins - a collection of 'background' protein sequences to help rule out non-unique regions of the proteins of interest; this should be as exhaustive as possible, e.g. UniRef90
 
 For this tutorial, our proteins of interest are a small set of TonB genes from
 Proteobacteria. TonB is a siderophore import protein found in the outer membrane
 of gram negative bacteria, and the reference proteins are subsampled from the
-[integrated microbial genomes (IMG) database](https://img.jgi.doe.gov/). Both are located in the `input` folder contained in the tutorial tarball `data/lab_8_examples.tgz`.
+[integrated microbial genomes (IMG) database](https://img.jgi.doe.gov/). Both
+are located in the `input` folder contained in the tutorial tarball
+`data/lab_8_examples.tgz`.
 
 - tonB.faa
 - ref_prots.faa
 
+Let's examine these protein sequences.
+
+```console
+$ less tonB
+```
+<div class="alert alert-success" role="alert">
+  1. Are there obvious regions of overlap between the TonB genes?
+  2. Is there overlap between TonB and the reference proteins?
+</div>
+
 We're trying to identify tonB genes in set of short DNA reads from metagenomic
 sequencing. The data we'll use for the tutorial was synthetically generated to
-contain 1000 reads from tonB genes, and 10000 reads from other proteins.
+contain 1,000 reads from tonB genes, and 10,000 reads from other proteins.
 
 - shortbred_demo_reads.fasta
 
-#### 2.2 Naive search
+### 2. Naive search
 
 To show why ShortBRED is useful, we will start by doing a naive BLAST search.
 First, make a BLAST database combining our tonB genes, and our reference
@@ -109,9 +108,10 @@ Adding sequences from FASTA; added 83 sequences in 0.00298595 seconds.
 ```
 
 Now, we'll BLAST our DNA reads against this protein database using translated
-search. The following command searches the database for alignments to our reads
-and generates a table with the query (read) ID, the subject (database) ID, the
-percent identity and the length of the alignment:
+search of the short reads against the sequences of our proteins of interest and
+the reference sequences. The following command searches the database for
+alignments to our reads and generates a table with the query (read) ID, the
+subject (database) ID, the percent identity and the length of the alignment:
 
 ```sh
 $ blastx -query shortbred_demo_reads_labeled.fasta -db allprots \
@@ -119,7 +119,13 @@ $ blastx -query shortbred_demo_reads_labeled.fasta -db allprots \
 ```
 
 First, notice how long this takes. Our database is tiny, and we don't have many
-reads, but translated search is SLOW. Let's take a look at the results (once
+reads, but translated search is SLOW.
+
+<div class="alert alert-success" role="alert">
+  Why is translated search slow compared with nucleotide search?
+</div>
+
+Let's take a look at the results (once
 you run this command, press `<space>` to scroll through, and `q` to exit back
 to the command prompt):
 
@@ -141,7 +147,12 @@ Background_read|00000002|0003|-1|WP_037108668.1  ref_637982011  37.500   16
 ```
 
 Let's check how many hits came from actual TonB genes vs background (searching
-here for hits of at least 85% identity and at least 25aa long):
+here for hits of at least 85% identity and at least 25aa long). The following
+command searches through the results file looking for lines that have `TonB` at
+the beginning (`grep -E '^TonB'`), `tonB_` somewhere else (`grep -E 'tonB_'`),
+and where column 3 has a value > 85, and column 4 has a value > 25
+(`awk '$3 > 85 && $4 > 25 {print $0}'`).  Finally, it returns a count of the
+lines (`wc` is "word count", and the `-l` flag asks it to count lines).
 
 ```sh
 $ cat naive_search.tsv | grep -E '^TonB' | grep -E 'tonB_' | awk '$3 > 85 && $4 > 25 {print $0}' | wc -l
@@ -150,16 +161,39 @@ $ cat naive_search.tsv | grep -E '^Background' | grep -E 'tonB_' | awk '$3 > 85 
     1594
 ```
 
-```
-1. What's the maximum length hit we'd expect, if our reads are 100bp long?
-2. Why do we get more thank 3000 hits for tonB, when we know that there were only 1000 matching reads in our metagenome?
-3. What is our false discovery rate in this analysis?
-```
+<div class="alert alert-success" role="alert">
+  1. What's the maximum length hit we'd expect, if our reads are 100bp long?
+  2. Why do we get more than 3,000 hits for tonB, when we know that there were only 1000 matching reads in our metagenome?
+  3. What is our false discovery rate in this analysis?
+</div>
 
-#### 2.2 Running ShortBRED-Identify
 
-Now let's do the same thing with ShortBRED. To create markers for the sample
-data, run the following command from the shortbred working directory:
+### 3. ShortBRED-Identify
+
+ShortBRED-Identify clusters the input protein sequences into families,
+builds consensus sequences, and then identifies regions of overlap among
+the consensus sequences and between the consensus sequences and a set of
+reference proteins. This information is used to construct a set of
+representative markers for the families.
+
+<img src="{{ "/assets/img/labs/lab_8_identify.png" | prepend: site.baseurl }}" alt=""/>
+
+<div class="alert alert-success" role="alert">
+  Why might proteins share regions of overlap even if they are not directly related (homologous)?
+</div>
+
+#### 3.1 Input Files
+
+ShortBRED begins with the same pair of files, which can be found in the `input/`
+folder:
+
+- tonB.faa
+- ref_prots.faa
+
+#### 3.2 Running ShortBRED-Identify
+
+To create markers for the sample data, run the following command from the
+ShortBRED working directory:
 
 ```sh
 $ shortbred_identify.py --goi  tonB.faa --ref ref_prots.faa --markers mymarkers.faa --tmp example_identify
@@ -181,21 +215,10 @@ Command: cd-hit -i tonB.faa -o
          1
 ```
 
-The above command will create a set of markers (`mymarkers.faa`). An
-example of the output is below:
+The above command will create a set of markers for TonB proteins
+(`mymarkers.faa`). An example of the output is below:
 
 ```
-$ head -20 mymarkers.faa
->tonB_AIE04533_TM_#01
-MRLPAFYRWLLLVVGISISGISLAQDAGWPRQIQDSRGVHTLDHKPA
->tonB_AIE04533_TM_#02
-DVAKARHVARLYIGEPNAETVAAQMPDLILISATGGDSALALYDQLSAIAPTLVINYDDK
-SWQSLLTQLGEITGQEKQAAARIAEFETQLTTVKQRIALPPQPVSALVYTPAAHSANLWT
-PESAQGKLLT
->tonB_AIE04533_TM_#03
-TLLLNRLAALF
->tonB_CDO13422_TM_#01
-MNFFSFCRRGALTGMLLLLGITSA
 2018-04-04|12:31:35 sandbox kev$ head -20 mymarkers.faa
 >tonB_AIE04533_TM_#01
 MRLPAFYRWLLLVVGISISGISLAQDAGWPRQIQDSRGVHTLDHKPA
@@ -219,22 +242,25 @@ LLVLQRLSSLFG
 MNKTRTCTTLAPRWLGDISFILAGLLALFFLLSVGDSQAETGAVHTTQANGFPRK
 ```
 
+<div class="alert alert-success" role="alert">
+  What do the first three sequences of the markers file represent?
+</div>
+
 The directory `example_identify` (folder name provided with the tmp
 flag) should contain the processed data from ShortBRED (including blast
 results). Please refer to the documentation for further details.
 
 
-### 3. ShortBRED-Quantify
+### 4. ShortBRED-Quantify
 
-ShortBRED-Quantify then searches for the markers in nucleotide data, and
-returns a normalized, relative abundance table of the protein families
-found in the data. This script takes the FASTA file of markers and
-quantifies their relative abundance in a FASTA file of nucleotide
-metagenomic reads.
+ShortBRED-Quantify then searches for the markers in short-read sequencing data,
+and returns a normalized, relative abundance table of the protein families
+found. This script takes the FASTA file of markers and quantifies their relative
+abundance in a FASTA file of nucleotide metagenomic reads.
 
 <img src="{{ "/assets/img/labs/lab_8_quantify.png" | prepend: site.baseurl }}" alt=""/>
 
-#### 3.1 Input Files
+#### 4.1 Input Files
 
 The input files required for the script are the following (Sample input
 files for the purpose of this tutorial are provided) :
@@ -244,9 +270,9 @@ files for the purpose of this tutorial are provided) :
 
 ShortBRED uses the markers file to generate a blast database for our short
 reads, focusing specifically on the unique markers. This makes the search
-substantially faster and more accurate.
+substantially faster and more specific.
 
-#### 3.2 Running ShortBRED-Quantify
+#### 4.2 Running ShortBRED-Quantify
 
 To create markers for the sample data, run the following command from
 the shortbred working directory: :
@@ -269,11 +295,11 @@ tonB_CDO13422  5509.641873278237   23    107
 tonB_EGT66731  37878.78787878788   92    102
 ```
 
-```
-1. What is the false negative rate with respect to the number of reads in the dataset?
-2. What does the "Count" column refer to?
-3. What is the false positive rate of ShortBRED in this case?
-```
+<div class="alert alert-success" role="alert">
+  1. We know there were 1000 reads mapping to TonB proteins. How many of them were identified?
+  1. What does the "Count" column refer to?
+  1. What is the false positive rate of ShortBRED in this case?
+</div>
 
 ShortBRED uses BLAST under the hood, and you can explore the results of the
 search in the same way as we did above:
@@ -285,10 +311,16 @@ $ cat example_quantify/wgsfull_results.tab | grep -E '^TonB' | grep -E 'tonB_' |
       15
 ```
 
-```
-1. Why doesn't ShortBRED count the 15 hits from background samples?
-```
+<div class="alert alert-success" role="alert">
+  1. Why doesn't ShortBRED count the 15 hits from background samples?
+</div>
 
 The directory `example_quantify` (folder name provided with the tmp
 flag) should contain the processed data from ShortBRED. Please refer to
 the documentation for further details.
+
+<div class="alert alert-success" role="alert">
+  1. ShortBRED favors specificity (avoiding false positives) over perfect sensitivity (detecting all true positives). Under what circumstances would this be important?
+  2. Under what circumstances would it be inadvisable?
+  3. What is a scenario where ShortBRED will have a false negative where the naive BLAST search would not?
+</div>
