@@ -60,7 +60,7 @@ how much sequence we may stand to lose, and can influence the approach taken in 
 by typing the `fastqc` command in the terminal:
 
 ```console
-vagrant@biobakery:~/Documents/labs/lab_4$ fastqc
+vagrant@biobakery:~/Documents/labs/lab_4$ fastqc &
 ```
 
 <img src="{{ "/assets/img/labs/lab_4_knead_fastqc_screen.png" | prepend: site.baseurl }}" alt="FastQC Splash Screen"/>
@@ -70,6 +70,22 @@ From here we can use the **File** menu to select the **Open..** option
 <img src="{{ "/assets/img/labs/lab_4_knead_fastqc_open_file.png" | prepend: site.baseurl }}" alt="FastQC Splash Screen"/>
 
 and open our sequence file found at `/home/vagrant/Documents/labs/lab_4/input/sequences.fastq`
+
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-exclamation-triangle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Excercise #1</b>: Explore the FastQC output for our input sequence files.
+            <br/><br/>
+            <b>Questions</b>
+            <ul>
+                <li>Why might the ends of our reads have lower quality scores than any other parts?</li>
+            </ul>
+        </div>
+    </div>        
+</div>
 
 #### Basic Sequence Statistics
 
@@ -106,15 +122,16 @@ not uncommon to see imbalances here (particularly at the ends of the sequence).
 
 <!-- Should we generate a dataset that has some adapter contamination here to demonstrate how we chop it off using KneadData? -->
 
-In the case that we are working with a dataset that has some sort of adapter contamination (most of them)we would expect to see FastQC flagging our sequences in one of the Overrepresented Sequence, Adapter Content, and/or Kmer Content panes. 
+In the case that we are working with a dataset that has some sort of adapter contamination (most of them) we would expect to see FastQC flagging our sequences in one of the Overrepresented Sequence, Adapter Content, and/or Kmer Content panes. 
 
 <img src="{{ "/assets/img/labs/lab_4_knead_fastqc_kmer_content.png" | prepend: site.baseurl }}" alt="FastQC: ERR550644_1 Kmer Content"/>
 
-Generally well known adapters (Illumina, Nextera, TruSEQ) are caught in the Adapter Content pane (*example from Human Microbiome 2 project*):
+Generally well known adapters (Illumina, Nextera, TruSEQ) are caught in the Adapter Content pane (*example from Human Microbiome Project 2*):
 
 <img src="{{ "/assets/img/labs/lab_4_knead_fastqc_adapter_content.png" | prepend: site.baseurl }}" alt="FastQC: ERR550644_1 Kmer Content"/>
 
-If any adatper contamination is identified by any of the methods FastQC uses we can use this information to tell KneadData to trim a specific set of adapters. A custom set of adapters can also be provided in more unique situations.
+If any adapter contamination is identified by any of the methods FastQC uses we can use this information to tell KneadData to trim a specific set of adapters. A custom set of adapters can also be provided in more unique situations.
+
 
 ### Running KneadData
 
@@ -141,14 +158,28 @@ usage: kneaddata [-h] [--version] [-v] -i INPUT -o OUTPUT_DIR
 ```
 
 The software allows for a good amount of control over each step but at minimum we need to 
-pass it the **input**, **output**, and **reference-db** options. For this example we will also 
-be passing some bowtie2 options using the **bowtie2-options** parameter (which can be specified multiple times for passing more than one option to bowtie2):
+pass it the `--input`, `--output`, and `--reference-db` options. 
+
+One or more bowtie2 parameters can be specificed using the `--bowtie2-options` parameters. A list of available options that can be passed along can be found <a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options">here</a>.
+
+Trimmomatic options can be passed using the `trimmomatic-options` parameter. A list of options can be found in the Trimmomatic manual found <a href="http://www.usadellab.org/cms/?page=trimmomatic">here</a>. 
+
+By default KneadData passes along `SLIDINGWINDOW:4:20 MINLEN:175` to Trimmomatic.
+
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-question-circle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Question</b>: What are the default parameters passed along to Trimmomatic doing?
+        </div>
+    </div>        
+</div>
+
+As KneadData runs it will provides us with some very brief summary information during the indicating the current step as well as the number of reads surviving after each step.
 
 ```console
-vagrant@biobakery:~/Documents/labs/lab_4$ kneaddata --input input/ERR550644_1.fastq.gz \
---output output/ERR550644_1 \
---reference-db database/demo_db --bowtie2-options="--very-fast" \
---bowtie2-options="-p 2"
 Decompressing gzipped file ...
 
 Initial number of reads ( /home/vagrant/Documents/labs/lab_4/output/ERR550644/decompressed_OCsbxP_ERR550644_1.fastq ): 500989
@@ -163,12 +194,9 @@ Final output file created:
 /home/vagrant/Documents/labs/lab_4/output/ERR550644/ERR550644_1_kneaddata.fastq
 ```
 
-KneadData provides us with some very brief summary information during the run indicating the steps completed as well as the number of reads surviving at each point.
-
-Let's explore the outputs from the run to get a better idea of our sequence quality post-KneadData
-and some of the sequences removed that may be of interest.
-
 ### KneadData Outputs
+
+Let's explore the outputs from the run to get a better idea of our sequence quality post-KneadData and some of the sequences removed that may be of interest.
 
 KneadData produces at mininimum four primary output files when running a single-ended dataset (this number will increase when dealing with a paired-end dataset).
 
@@ -181,6 +209,7 @@ total 341760
 -rw-rw-r-- 1 vagrant vagrant      5594 Mar 29 13:51 ERR550644_1_kneaddata.log
 -rw-rw-r-- 1 vagrant vagrant 174971618 Mar 29 13:51 ERR550644_1_kneaddata.trimmed.fastq
 ```
+
 #### KneadData Log File
 
 The KneadData log file provides us with some of the same output information we see printed to the screen
@@ -231,11 +260,6 @@ The first set of outputs created during the KneadData run are those produced by 
 trim off any adapters (i.e. Nextera, TruSEQ, Illumina adapters) as well as to clip off low quality 
 sequences. These files will be labeled with the `.trimmed.fastq` file extension (i.e. `ERR550644_1_kneaddata.trimmed.fastq`).
 
-Taking a peek at these sequences in FastQC we should see a very marked improvement in the 
-Per base sequence quality pane:
-
-<img src="{{ "/assets/img/labs/lab_4_knead_fastqc_postrun_per_base_qual.png" | prepend: site.baseurl }}" alt="FastQC: ERR550644_1 Kmer Content"/>
-
 If any adapter content was identified in either the Overrepresented sequences, Adapter Content, or Kmer Content panes we would also see passes here (provided we supplied the proper adapter sequence file to KneadData/Trimmomatic).
 
 #### Contaminant Reads
@@ -252,6 +276,19 @@ Contaminate reads have applications ranging from exploring what kind of contamin
 
 Our final output file contains the results of are trimmed and filtered reads as well as any optional steps (such as tandem repeat masking) and written to the file `ERR550644_1_kneaddata.fastq`. 
 
-Running this file through FastQC will return a much happier result:
-
-<img src="{{ "/assets/img/labs/lab_4_knead_fastqc_final_report.png" | prepend: site.baseurl }}" alt="FastQC: ERR550644_1 Final Report"/>
+<div class="alert alert-success" role="alert">
+    <div class="row">
+        <div class="col-1 alert-icon-col">
+            <span class="fa fa-exclamation-triangle fa-fw"></span>
+        </div>
+        <div class="col">
+            <b>Excercise #3</b>: Run FastQC on our trimmed reads.
+            <br/><br/>
+            <b>Questions</b>
+            <ul>
+                <li>How have the quality of reads changed pre vs post KneadData?</li>
+                <li>You may notice that k-mer content and per-base composition are still flagged; how might we address these?</li>
+            </ul>
+        </div>
+    </div>        
+</div>
