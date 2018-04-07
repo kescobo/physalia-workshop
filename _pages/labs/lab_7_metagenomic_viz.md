@@ -13,12 +13,22 @@ custom_js:
 
 # Metagenomic visualizations in R
 
-Start from a clean environment, set your working directory and load the data.
+* Start from a clean environment, set your working directory and load the data.
+* Download the data and put it into the data directory: https://github.com/MelanieSch/physalia-workshop/raw/master/data/labs/lab_7_1_metaphlan_merged_MGX_species_relAb.Rdata
+
 
 ```R
 rm(list=ls())
-setwd(/path_to_your_directory)
+
+dir.create("R_Metagenomic_Visualization") # Create a new directory
+dir.create("R_Metagenomic_Visualization/Data") # Create a new directory
+setwd("/Users/melanie/R_Metagenomic_Visualization") # Change the current working directory 
+
+setwd("/path_to_your_directory/R_Metagenomic_Visualization")
 ```
+
+* Download the data and put it into the data directory: https://github.com/MelanieSch/physalia-workshop/raw/master/data/labs/lab_7_1_metaphlan_merged_MGX_species_relAb.Rdata
+
 
 ```R
 load(file="Data/metaphlan_merged_MGX_species_relAb.Rdata")
@@ -392,12 +402,19 @@ Set up the environment and load the packages.
 ```R
 rm(list=ls())
 
-setwd("/Users/melanie/R_tutorial")
+setwd("/Path_to_your_directory/R_Metagenomic_Visualization")
 
 library(ggplot2)
 library(vegan)
 library(ggrepel)
 ```
+
+Download the data:
+* https://github.com/MelanieSch/physalia-workshop/raw/master/data/labs/lab_7_MGX_pwys.Rdata
+* https://github.com/MelanieSch/physalia-workshop/raw/master/data/labs/lab_7_MTX_pwys.Rdata
+* https://github.com/MelanieSch/physalia-workshop/raw/master/data/labs/lab_7_ratio_pwys.Rdata
+
+
 
 Load the data.
 
