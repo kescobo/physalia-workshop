@@ -387,6 +387,23 @@ sequences_B.fasta
   <code>examples_dirB</code> directory.
 </div>
 
+### Running Commands in the Background
+When we run a command on the command-line it will normally take control of our terminal window. We can observe this behavior by 
+executing the following command:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB$ xclock
+```
+
+You should now see that you can't type anything else into the terminal. The `xclock` command has taken over our terminal window and will not 
+relinquish control until we close the clock window. Once you do this you should notice you can now type new commands into the terminal.
+
+We can get around this by adding the `&` character to any of our commands. Doing this tells Unix that we would like to run this command in the background and still retain control over our terminal and execute more commands.
+
+<div class="alert alert-success" role="alert">
+  <b>Excercise #6</b>: Run the <code>xclock</code> command in the background.
+</div>
+
 ### Unix Manual Pages
 
 The majority of Unix commands will come with manuals built in that can be accessed using the `man` command:
@@ -480,3 +497,91 @@ Here we are using the `ls` command and the **Tab** key to bring up all files tha
 vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB/sequences$ ls sequences_
 sequences_X.fasta  sequences_Y.fasta  sequences_Z.fasta
 ```
+
+### Advanced Unix
+
+Time-permitting we can begin to cover some more advanced Unix topics and commands that can be very useful.
+
+#### Pipelining Commands
+
+Unix provides us with a very clever way to send the output of one command to another for further processing. This action is called "pipelining" or "pipe'ing" and is used via the `|` character. Let's see a quick example using the `ls` command and the `grep` command.
+
+We learned how to list just the FASTA files in a directory using the wildcard character but we can also achieve this using the `ls` command, pipe'ing, and the `grep command:
+
+```console
+vagrant@biobakery:~/Documents/labs/lab_2/data/example_dirB/sequences$ ls | grep "sequences*"
+sequences_X.fasta  sequences_Y.fasta  sequences_Z.fasta
+```
+
+This seems not so useful seeing as we can do this with less commands with the wildcard character but pipe'ing allows you to construct complex combinations of commands in an easy manner.
+
+<div class="alert alert-success" role="alert">
+  <b>Excercise #7</b>: Using Unix pipelining list all sequences under the <code>sequences</code> directory and use the <code>grep</code> command to exact all sequences that beging with `ACT` and then grep these lines again for the <code>GGC</code> nucleotide sequence.
+</div>
+
+#### Bash scripting and For loops
+
+Pipe'ing is useful to chain commands together that operate on a "stream" of output but sometimes we want to execute commands that may work in conjunction
+but not necessarily on the direct output of an adjacent command.
+
+The Unix `for` loop is a construct we can use to execute one or more actions on a collection that we can define. Below is the basic format of a `for` loop:
+
+```console
+for <ITEM> in <COLLECTION>
+do
+  <ACTIONS>
+done
+```
+
+There is a lot to digest here but we can break it down line by line. Our first line:
+
+```console
+for <ITEM> in <COLLECTION>
+```
+
+allows us to iterate over each of the elements in `<COLLECTION>` and stores the current element in a variable that we define as `<ITEM>`. A more relevant example here 
+would be if we wanted to iterate over each of the sequence files ending in .fasta in the currenct directory:
+
+```console
+for file in *.fasta
+```
+
+We store each of the FASTA files while we are iterating over all FASTA files in a variable named `file` and we can access each element by calling this variable as we will see below.
+
+Our next line is telling Unix that we are about to pass one or more actions to be executed on each item in our collection:
+
+```console
+do
+```
+
+Next up we supply any actions we'd like to execute. Following our sequence example, let's create a new directory for each file we find and store the sequence ID's in a text file in this new folder:
+
+```console
+for file in *.fasta
+do
+  mkdir $file
+  grep ">" $file > sequence_headers.txt
+```
+
+The important thing to note here is that when we want to make use of the item we are iterating over we need to prepend the `$` character to whatever name we provided to our variable. Our example above our varibale is named `file` so when we intend to use it in any Unix command we can call up the file by supplying `$file` to the command. The key here being the `$` attached to our filename to indicate to Unix that we are calling up the value stored in a variable.
+
+The final line simply tells Unix that we are ending our `for` loop and to execute the actions on all of the items on our collection:
+
+```console
+done
+```
+
+Put it all together it looks something like this:
+
+```console
+for file in *.fasta
+do
+  mkdir $file
+  grep ">" $file > $file/fasta_headers.txt
+  cp $file $file/sequences.txt
+done
+```
+
+<div class="alert alert-success" role="alert">
+  <b>Excercise #8</b>: Run the supplied <code>for</code> loop. Try adding a step to make a copy of the sequence file in the newly created folder as well.
+</div>
