@@ -1,0 +1,15 @@
+#------------------------------------------------------------------------------#
+#                            OFFICIAL UBUNTU REPOS                             #
+#------------------------------------------------------------------------------#
+deb http://old-releases.ubuntu.com/ubuntu/ wily main
+deb-src http://old-releases.ubuntu.com/ubuntu/ wily main
+deb http://old-releases.ubuntu.com/ubuntu/ wily-updates main
+deb-src http://old-releases.ubuntu.com/ubuntu/ wily-updates main
+deb http://old-releases.ubuntu.com/ubuntu/ wily universe
+deb-src http://old-releases.ubuntu.com/ubuntu/ wily universe
+deb http://old-releases.ubuntu.com/ubuntu/ wily-updates universe
+deb-src http://old-releases.ubuntu.com/ubuntu/ wily-updates universe
+deb http://old-releases.ubuntu.com/ubuntu wily-security main
+deb-src http://old-releases.ubuntu.com/ubuntu wily-security main
+deb http://old-releases.ubuntu.com/ubuntu wily-security universe
+deb-src http://old-releases.ubuntu.com/ubuntu wily-security universe
